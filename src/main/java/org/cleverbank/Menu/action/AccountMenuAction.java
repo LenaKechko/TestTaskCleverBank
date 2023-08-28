@@ -1,10 +1,9 @@
-package org.cleverbank.menu.action;
+package org.cleverbank.Menu.action;
 
 import org.cleverbank.DAO.BankDAO;
 import org.cleverbank.DAO.TypeCurrencyDAO;
 import org.cleverbank.DAO.UserDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.entities.Bank;
 import org.cleverbank.entities.TypeCurrency;
 import org.cleverbank.entities.User;
 
@@ -30,7 +29,7 @@ public class AccountMenuAction {
         User user = null;
         if (temp == 1) {
             UserDAO userDAO = new UserDAO();
-            int id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
+            id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
             user = userDAO.findEntityById(id);
         } else {
             user = UserMenuAction.create();

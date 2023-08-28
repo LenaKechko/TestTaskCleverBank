@@ -1,13 +1,9 @@
-package org.cleverbank.menu;
+package org.cleverbank.Menu;
 
 import org.cleverbank.DAO.AccountDAO;
-import org.cleverbank.DAO.TypeCurrencyDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.entities.TypeCurrency;
-import org.cleverbank.menu.action.AccountMenuAction;
+import org.cleverbank.Menu.action.AccountMenuAction;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Scanner;
 

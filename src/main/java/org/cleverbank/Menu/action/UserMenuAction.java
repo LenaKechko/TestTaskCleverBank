@@ -1,4 +1,4 @@
-package org.cleverbank.menu.action;
+package org.cleverbank.Menu.action;
 
 import org.cleverbank.entities.User;
 

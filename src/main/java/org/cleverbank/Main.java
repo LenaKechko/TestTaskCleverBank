@@ -1,10 +1,6 @@
 package org.cleverbank;
 
-import org.cleverbank.menu.MainMenu;
-import org.cleverbank.menu.action.UserMenuAction;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
+import org.cleverbank.Menu.MainMenu;
 
 public class Main {
 
