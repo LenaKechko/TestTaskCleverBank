@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в приложение Clever-Bank.\nВыберите операцию:");
-//        MainMenu.start();
+        MainMenu.start();
 //        System.out.println("Testing connection");
 //        UserDAO userDAO = new UserDAO();
 //        System.out.println(userDAO.findAll());
