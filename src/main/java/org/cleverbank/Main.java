@@ -1,10 +1,9 @@
 package org.cleverbank;
 
-import org.cleverbank.DAO.UserDAO;
-import org.cleverbank.Menu.MainMenu;
-import org.w3c.dom.ls.LSOutput;
+import org.cleverbank.menu.MainMenu;
+import org.cleverbank.menu.action.UserMenuAction;
 
-import java.util.Scanner;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class Main {

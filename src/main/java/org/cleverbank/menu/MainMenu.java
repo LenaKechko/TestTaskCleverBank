@@ -1,6 +1,4 @@
-package org.cleverbank.Menu;
-
-import org.cleverbank.entities.User;
+package org.cleverbank.menu;
 
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package org.cleverbank.Menu;
+package org.cleverbank.menu;
 
 import java.util.Scanner;
 

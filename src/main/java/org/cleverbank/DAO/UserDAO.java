@@ -66,14 +66,14 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return user;
     }
 
-    public Integer findEntityByFullName(String lastName, String name, String middleName) {
+    public Integer findEntityByFullName(User user) {
         Integer id = 0;
         try (Connection connection = ConnectorDB.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_USER_FULLNAME)) {
-            statement.setString(1, lastName);
-            statement.setString(2, name);
-            statement.setString(3, middleName);
+            statement.setString(1, user.getLastName());
+            statement.setString(2, user.getName());
+            statement.setString(3, user.getMiddleName());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 id = rs.getInt("id");

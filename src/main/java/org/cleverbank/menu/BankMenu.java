@@ -1,9 +1,8 @@
-package org.cleverbank.Menu;
+package org.cleverbank.menu;
 
 import org.cleverbank.DAO.BankDAO;
-import org.cleverbank.DAO.UserDAO;
 import org.cleverbank.entities.Bank;
-import org.cleverbank.entities.User;
+import org.cleverbank.menu.action.BankMenuAction;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -32,17 +31,10 @@ public class BankMenu extends AbstractMenu {
                     }
                     break;
                 case 2:
-                    Bank bank = new Bank();
-                    System.out.println("Введите наименование банка:");
-                    bank.setName(scanner.next());
-                    System.out.println("Введите адрес:");
-                    bank.setAddress(scanner.next());
-                    bankDAO.create(bank);
+                    bankDAO.create(BankMenuAction.create());
                     break;
                 case 3:
-                    System.out.println("Введите наименование банка:");
-                    name = scanner.next();
-                    id = bankDAO.findEntityByName(name);
+                    id = bankDAO.findEntityByName(BankMenuAction.enterName());
                     if (id != 0) {
                         bankDAO.delete(id);
                     } else {
@@ -50,20 +42,11 @@ public class BankMenu extends AbstractMenu {
                     }
                     break;
                 case 4:
-                    System.out.println("Введите наименование банка:");
-                    name = scanner.next();
-                    id = bankDAO.findEntityByName(name);
+                    id = bankDAO.findEntityByName(BankMenuAction.enterName());
                     if (id != 0) {
-                        bank = bankDAO.findEntityById(id);
-                        System.out.println("изменить наименование банка (ввести новое/N):");
-                        name = scanner.next();
-                        if (!name.equals("N"))
-                            bank.setName(name);
-                        System.out.println("изменить адрес (ввести новый/N):");
-                        String address = scanner.next();
-                        if (!address.equals("N"))
-                            bank.setAddress(address);
-                        bankDAO.update(bank);
+                        Bank bankUpdate = bankDAO.findEntityById(id);
+                        bankUpdate = BankMenuAction.update(bankUpdate);
+                        bankDAO.update(bankUpdate);
                     } else {
                         System.out.println("Банк для изменений не найден!");
                     }
