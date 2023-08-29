@@ -1,8 +1,8 @@
-package org.cleverbank.Menu;
+package org.cleverbank.menu;
 
-import org.cleverbank.DAO.AccountDAO;
+import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.Menu.action.AccountMenuAction;
+import org.cleverbank.menu.action.AccountMenuAction;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,7 +13,7 @@ public class AccountMenu extends AbstractMenu {
             "1. Просмотреть информацию по всем счетам\n" +
                     "2. Открыть новый счет\n" +
                     "3. Закрыть счет (по фио владельца)\n" +
-                    "4. Кореектировать данные счета (по фио владельца)\n" +
+                    "4. Корректировать данные счета (по фио владельца)\n" +
                     "5. Вернуться в главное меню";
 
     public static void start() {
@@ -32,8 +32,21 @@ public class AccountMenu extends AbstractMenu {
                     accountDAO.create(AccountMenuAction.create());
                     break;
                 case 3:
+                    Account account = AccountMenuAction.enterUserFullName();
+                    if (account == null) {
+                        System.out.println("Такого пользователя не существует!");
+                    } else {
+                        accountDAO.delete(account);
+                    }
                     break;
                 case 4:
+                    Account accountUpdate = AccountMenuAction.enterUserFullName();
+                    if (accountUpdate == null) {
+                        System.out.println("Такого пользователя не существует!");
+                    } else {
+                        accountUpdate = AccountMenuAction.update(accountUpdate);
+                        accountDAO.update(accountUpdate);
+                    }
                     break;
                 case 5:
                     return;

@@ -1,8 +1,8 @@
-package org.cleverbank.Menu;
+package org.cleverbank.menu;
 
-import org.cleverbank.DAO.UserDAO;
+import org.cleverbank.dao.UserDAO;
 import org.cleverbank.entities.User;
-import org.cleverbank.Menu.action.UserMenuAction;
+import org.cleverbank.menu.action.UserMenuAction;
 
 import java.util.ArrayList;
 import java.util.Scanner;

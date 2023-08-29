@@ -1,30 +1,31 @@
 package org.cleverbank.operation;
 
+import org.cleverbank.dao.BankTransactionDAO;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
+import org.cleverbank.entities.TypeTransaction;
 
 public class UserOperationWithAccount {
     private IOperationWithAccount operation;
 
-    public void runOperation(String nameOperation, Account senderAccount, Account receiverAccount, int money) {
+    public void runOperation(TypeTransaction typeTransaction, Account senderAccount, Account receiverAccount, double money) {
         BankTransaction operationCheck = null;
-        switch (nameOperation) {
+        BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
+        switch (typeTransaction.getName().toLowerCase()) {
             case "перевод":
                 operation = new TransferMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
                 break;
             case "снятие средств":
                 operation = new WithdrawalMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
-
                 break;
             case "пополнение счета":
                 operation = new ReplenishmentMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
                 break;
         }
+        operation.startOperation(senderAccount, receiverAccount, money);
+        operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, typeTransaction);
+        bankTransactionDAO.create(operationCheck);
+        String bill = operation.generateCheck(operationCheck);
+        operation.printCheck(bill, "check" + operationCheck.getNumberCheck() + ".txt");
     }
 }

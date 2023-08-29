@@ -1,8 +1,8 @@
 package org.cleverbank;
 
-import org.cleverbank.Menu.MainMenu;
+import org.cleverbank.menu.MainMenu;
 
-public class Main {
+public class Runner {
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в приложение Clever-Bank.\nВыберите операцию:");

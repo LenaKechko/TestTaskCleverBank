@@ -1,8 +1,7 @@
-package org.cleverbank.DAO;
+package org.cleverbank.dao;
 
 import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.Bank;
-import org.cleverbank.entities.User;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.cleverbank.DAO;
+package org.cleverbank.dao;
 
 import org.cleverbank.entities.User;
 import org.cleverbank.ConnectorDB;
