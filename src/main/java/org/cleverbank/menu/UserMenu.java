@@ -10,11 +10,11 @@ import java.util.Scanner;
 public class UserMenu extends AbstractMenu {
 
     private final static String USER_MENU =
-            "1. Display users data\n" +
-                    "2. Add new user\n" +
-                    "3. Delete user (by full name)\n" +
-                    "4. Change user data (by full name)\n" +
-                    "5. Return to main menu";
+            "1. Вывести информацию о клиентах\n" +
+                    "2. Добавить нового клиента\n" +
+                    "3. Удалить клиента (по фио)\n" +
+                    "4. Изменить данные клиента (по фио)\n" +
+                    "5. Вернуться в главное меню";
 
 
     public static void start() {
@@ -37,6 +37,7 @@ public class UserMenu extends AbstractMenu {
                     id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
                     if (id != 0) {
                         userDAO.delete(id);
+                        System.out.println("Удаление произведено успешно");
                     } else {
                         System.out.println("Нет такого пользователя!");
                     }
@@ -47,6 +48,7 @@ public class UserMenu extends AbstractMenu {
                         User userUpdate = userDAO.findEntityById(id);
                         userUpdate = UserMenuAction.update(userUpdate);
                         userDAO.update(userUpdate);
+                        System.out.println("Данные успешно изменены");
                     } else {
                         System.out.println("Нет такого пользователя для изменения!");
                     }

@@ -31,10 +31,12 @@ public class ReplenishmentMoney extends Check implements IOperationWithAccount {
     public String generateCheck(BankTransaction bankTransaction) {
         String bill = super.generateCheck(bankTransaction);
 
-        bill += String.format("| Банк получателя:  %s|\n", bankTransaction.getAccountOfSender().getBank());
-        bill += String.format("| Счет получателя:  %s|\n", bankTransaction.getAccountOfSender().getNumberAccount());
-        bill += String.format("| Сумма:  %f %s|\n", bankTransaction.getSumma(), bankTransaction.getType().getName());
-        bill = "-------------------------------------------";
+        bill += String.format("| Банк получателя: %22s |\n", bankTransaction.getAccountOfSender().getBank().getName());
+        bill += String.format("| Счет получателя: %22s |\n", bankTransaction.getAccountOfSender().getNumberAccount());
+        bill += String.format("| Сумма: %28.2f %3s |\n",
+                bankTransaction.getSumma(),
+                bankTransaction.getAccountOfSender().getCurrency().getName());
+        bill += "-------------------------------------------";
 
         return bill;
 

@@ -1,47 +1,31 @@
 package org.cleverbank;
 
 import org.cleverbank.menu.MainMenu;
+import org.cleverbank.operation.CashBack;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Map;
 
 public class Runner {
 
     public static void main(String[] args) {
-        System.out.println("Добро пожаловать в приложение Clever-Bank.\nВыберите операцию:");
-        MainMenu.start();
-//        System.out.println("Testing connection");
-//        UserDAO userDAO = new UserDAO();
-//        System.out.println(userDAO.findAll());
+        System.out.println("Добро пожаловать в Clever-Bank.\nВыберите операцию:");
 //        try {
-//            Class.forName("org.postgresql.Driver");
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//            return;
-//        }
-//        System.out.println("Connection successful");
-//        Connection connection = null;
-//        try {
-//            connection = ConnectorDB.getConnection();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return;
-//        }
-//
-//        if (connection != null) {
-//            System.out.println("Connection with database");
-//            try {
-//                Statement statement = connection.createStatement();
-//                ResultSet rs = statement.executeQuery("select * from banks");
-//                while (rs.next()) {
-//                    System.out.println(rs.getInt("id"));
-//                    System.out.println(rs.getString("name"));
-//
-//                }
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
+//            InputStream inputStream = new FileInputStream("config.yml");
+//            Yaml yaml = new Yaml();
+//            Map<String, Object> data = yaml.load(inputStream);
+//            System.out.println(data.get("periodOfTime"));
+//            boolean checkOperation = false;
+//            if (!checkOperation) {
+//                checkOperation = CashBack.getCashBank((Double) data.get("percent"));
 //            }
-//
-//        } else {
-//            System.out.println("Fail connection");
+//        } catch (FileNotFoundException e) {
+//            System.out.println(e.getMessage());
 //        }
 
+        MainMenu.start();
     }
 }

@@ -9,11 +9,11 @@ import java.util.Scanner;
 
 public class BankMenu extends AbstractMenu {
     private final static String BANK_MENU =
-            "1. Display information about banks\n" +
-                    "2. Add new bank\n" +
-                    "3. Delete bank (by name)\n" +
-                    "4. Change bank date (by name)\n" +
-                    "5. Return to main menu";
+            "1. Вывести информацию о банках\n" +
+                    "2. Добавить новый банк\n" +
+                    "3. Удалить банк (по наименованию)\n" +
+                    "4. Изменить данные банка (по наименованию)\n" +
+                    "5. Вернуться в главное меню";
 
     public static void start() {
         while (true) {
@@ -37,6 +37,7 @@ public class BankMenu extends AbstractMenu {
                     id = bankDAO.findEntityByName(BankMenuAction.enterName());
                     if (id != 0) {
                         bankDAO.delete(id);
+                        System.out.println("Удаление произведено успешно");
                     } else {
                         System.out.println("Нет такого банка!");
                     }
@@ -47,6 +48,7 @@ public class BankMenu extends AbstractMenu {
                         Bank bankUpdate = bankDAO.findEntityById(id);
                         bankUpdate = BankMenuAction.update(bankUpdate);
                         bankDAO.update(bankUpdate);
+                        System.out.println("Данные успешно изменены");
                     } else {
                         System.out.println("Банк для изменений не найден!");
                     }

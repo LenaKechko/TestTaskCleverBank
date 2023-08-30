@@ -25,6 +25,8 @@ public class UserOperationWithAccount {
         operation.startOperation(senderAccount, receiverAccount, money);
         operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, typeTransaction);
         bankTransactionDAO.create(operationCheck);
+        int numberCheck = bankTransactionDAO.findNumberCheckByBankTransaction(operationCheck);
+        operationCheck.setNumberCheck(numberCheck);
         String bill = operation.generateCheck(operationCheck);
         operation.printCheck(bill, "check" + operationCheck.getNumberCheck() + ".txt");
     }

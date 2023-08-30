@@ -10,7 +10,7 @@ public class BankMenuAction {
 
     public static Bank create() {
         Bank bank = new Bank();
-        System.out.println("Введите наименование банка:");
+        System.out.println("введите наименование банка:");
         bank.setName(scanner.nextLine());
         System.out.println("Введите адрес:");
         bank.setAddress(scanner.nextLine());
@@ -24,11 +24,11 @@ public class BankMenuAction {
     }
 
     public static Bank update(Bank bank) {
-        System.out.println("изменить наименование банка (ввести новое/N):");
+        System.out.println("Изменить наименование банка (ввести новое/N):");
         String name = scanner.nextLine();
         if (!name.equals("N"))
             bank.setName(name);
-        System.out.println("изменить адрес (ввести новый/N):");
+        System.out.println("Изменить адрес (ввести новый/N):");
         String address = scanner.nextLine();
         if (!address.equals("N"))
             bank.setAddress(address);

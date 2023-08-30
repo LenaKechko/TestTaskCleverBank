@@ -26,8 +26,8 @@ public class Check {
     }
     public String generateCheck(BankTransaction bankTransaction) {
         String bill = "-------------------------------------------\n";
-        bill += "|            Банковский чек               |\n";
-        bill += String.format("| Чек: %35d |\n", bankTransaction.getNumberCheck());
+        bill += String.format("|            Банковский чек               |\n");
+        bill += String.format("| Чек: %34d |\n", bankTransaction.getNumberCheck());
         SimpleDateFormat formatterForDate = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat formatterForTime = new SimpleDateFormat("HH:mm:ss");
         bill += String.format("| %10s                     %8s |\n",

@@ -15,6 +15,7 @@ public class UserMenuAction {
         user.setName(scanner.next());
         System.out.println("Введите отчество:");
         user.setMiddleName(scanner.next());
+        scanner.nextLine();
         System.out.println("Введите адрес:");
         user.setAddress(scanner.nextLine());
         System.out.println("Введите номер телефона:");
@@ -34,23 +35,24 @@ public class UserMenuAction {
     }
 
     public static User update(User user) {
-        System.out.println("изменить фамилию (ввести новую/N):");
+        System.out.println("Изменить фамилию (ввести новую/N):");
         String lastName = scanner.next();
         if (!lastName.equals("N"))
             user.setLastName(lastName);
-        System.out.println("изменить имя (ввести новое/N):");
+        System.out.println("Изменить имя (ввести новое/N):");
         String name = scanner.next();
         if (!name.equals("N"))
             user.setName(name);
-        System.out.println("изменить отчество (ввести новое/N):");
+        System.out.println("Изменить отчество (ввести новое/N):");
         String middleName = scanner.next();
         if (!middleName.equals("N"))
             user.setMiddleName(middleName);
-        System.out.println("изменить адрес (ввести новый/N):");
+        scanner.nextLine();
+        System.out.println("Изменить адрес (ввести новый/N):");
         String address = scanner.nextLine();
         if (!address.equals("N"))
             user.setAddress(address);
-        System.out.println("изменить номер телефона (ввести новый/N):");
+        System.out.println("Изменить номер телефона (ввести новый/N):");
         String phoneNumber = scanner.nextLine();
         if (!phoneNumber.equals("N"))
             user.setLastName(phoneNumber);

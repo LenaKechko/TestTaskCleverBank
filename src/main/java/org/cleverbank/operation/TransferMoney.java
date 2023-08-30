@@ -7,9 +7,9 @@ import org.cleverbank.entities.TypeTransaction;
 public class TransferMoney extends Check implements IOperationWithAccount {
     public void startOperation(Account senderAccount, Account receiverAccount, double money) {
         ReplenishmentMoney operationSender = new ReplenishmentMoney();
-        operationSender.startOperation(senderAccount, null, money);
+        operationSender.startOperation(null, receiverAccount, money);
         WithdrawalMoney operationReceiver = new WithdrawalMoney();
-        operationReceiver.startOperation(null, receiverAccount, money);
+        operationReceiver.startOperation(senderAccount, null, money);
     }
 
     public BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, double money, TypeTransaction type) {
@@ -20,12 +20,14 @@ public class TransferMoney extends Check implements IOperationWithAccount {
     public String generateCheck(BankTransaction bankTransaction) {
         String bill = super.generateCheck(bankTransaction);
 
-        bill += String.format("| Банк отправителя:  %s|\n", bankTransaction.getAccountOfSender().getBank());
-        bill += String.format("| Банк получателя:  %s|\n", bankTransaction.getAccountOfReceiver().getBank());
-        bill += String.format("| Счет отправителя:  %s|\n", bankTransaction.getAccountOfSender().getNumberAccount());
-        bill += String.format("| Счет получателя:  %s|\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
-        bill += String.format("| Сумма:  %f %s|\n", bankTransaction.getSumma(), bankTransaction.getType().getName());
-        bill = "-------------------------------------------";
+        bill += String.format("| Банк отправителя: %21s |\n", bankTransaction.getAccountOfSender().getBank().getName());
+        bill += String.format("| Банк получателя: %22s |\n", bankTransaction.getAccountOfReceiver().getBank().getName());
+        bill += String.format("| Счет отправителя: %21s |\n", bankTransaction.getAccountOfSender().getNumberAccount());
+        bill += String.format("| Счет получателя: %22s |\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
+        bill += String.format("| Сумма: %28.2f %3s |\n",
+                bankTransaction.getSumma(),
+                bankTransaction.getAccountOfSender().getCurrency().getName());
+        bill += "-------------------------------------------";
 
         return bill;
     }

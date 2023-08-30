@@ -37,6 +37,7 @@ public class AccountMenu extends AbstractMenu {
                         System.out.println("Такого пользователя не существует!");
                     } else {
                         accountDAO.delete(account);
+                        System.out.println("Удаление произведено успешно");
                     }
                     break;
                 case 4:
@@ -44,8 +45,10 @@ public class AccountMenu extends AbstractMenu {
                     if (accountUpdate == null) {
                         System.out.println("Такого пользователя не существует!");
                     } else {
+                        System.out.println(accountUpdate);
                         accountUpdate = AccountMenuAction.update(accountUpdate);
                         accountDAO.update(accountUpdate);
+                        System.out.println("Данные успешно изменены");
                     }
                     break;
                 case 5:

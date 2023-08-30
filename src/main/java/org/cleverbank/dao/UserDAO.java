@@ -88,7 +88,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
     public boolean delete(Integer id) {
         try (Connection connection = ConnectorDB.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_ID)) {
-            preparedStatement.setString(1, String.valueOf(id));
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {

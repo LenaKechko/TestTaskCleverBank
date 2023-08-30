@@ -24,11 +24,13 @@ public class WithdrawalMoney extends Check implements IOperationWithAccount {
     @Override
     public String generateCheck(BankTransaction bankTransaction) {
         String bill = super.generateCheck(bankTransaction);
-
-        bill += String.format("| Банк клиента:  %s|\n", bankTransaction.getAccountOfReceiver().getBank());
-        bill += String.format("| Счет клиента:  %s|\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
-        bill += String.format("| Сумма:  %f %s|\n", bankTransaction.getSumma(), bankTransaction.getType().getName());
-        bill = "-------------------------------------------";
+//43
+        bill += String.format("| Банк клиента: %25s |\n", bankTransaction.getAccountOfReceiver().getBank().getName());
+        bill += String.format("| Счет клиента: %25s |\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
+        bill += String.format("| Сумма: %28.2f %3s |\n",
+                bankTransaction.getSumma(),
+                bankTransaction.getAccountOfReceiver().getCurrency().getName());
+        bill += "-------------------------------------------";
 
         return bill;
     }
