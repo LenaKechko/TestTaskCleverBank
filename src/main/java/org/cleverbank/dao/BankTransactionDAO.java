@@ -4,6 +4,7 @@ import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,9 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                     "and (id_sender = ? or id_sender is null) and (id_receiver = ? or id_receiver is null)";
 
     public static final String SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN =
-            "SELECT * FROM transactions WHERE transaction_date between ? and ?";
+            "SELECT * FROM transactions " +
+                    "WHERE (id_sender = ? or id_receiver = ?) and (transaction_date between ? and ?)" +
+                    "ORDER BY transaction_date";
 
     public static final String SQL_INSERT_BANK_TRANSACTION =
             "INSERT INTO transactions(transaction_date, id_type_of_transaction, sum, id_sender, id_receiver) " +
@@ -83,13 +86,17 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return bankTransaction;
     }
 
-    public BankTransaction findEntityByDate(Date startDate, Date finishDate) {
-        BankTransaction bankTransaction = null;
+    public ArrayList<BankTransaction> findEntityByDate(LocalDate startDate, LocalDate finishDate, Account account) {
+        ArrayList<BankTransaction> bankTransactions = new ArrayList<>();
         try (Connection connection = ConnectorDB.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN)) {
-            statement.setDate(1, startDate);
-            statement.setDate(2, finishDate);
+            statement.setInt(1, account.getId());
+            statement.setInt(2, account.getId());
+            statement.setTimestamp(3,
+                    Timestamp.valueOf(startDate.atStartOfDay()));
+            statement.setTimestamp(4,
+                    Timestamp.valueOf(finishDate.plusDays(1).atStartOfDay()));
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -99,13 +106,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Double summa = rs.getDouble("sum");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
-                bankTransaction = new BankTransaction(numberCheck, transactionDate, typeTransaction, summa, accountOfSender, accountOfReceiver);
+                bankTransactions.add(new BankTransaction(numberCheck, transactionDate, typeTransaction, summa, accountOfSender, accountOfReceiver));
             }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return bankTransaction;
+        return bankTransactions;
     }
 
     public Integer findNumberCheckByBankTransaction(BankTransaction bankTransaction) {

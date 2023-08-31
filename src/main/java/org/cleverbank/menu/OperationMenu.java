@@ -13,7 +13,8 @@ public class OperationMenu extends AbstractMenu {
             "1. Перевод денежных средств на другой аккаунт\n" +
                     "2. Снятие средств\n" +
                     "3. Пополнение счета\n" +
-                    "4. Вернуться в основное меню";
+                    "4. Запросить выписку за период\n" +
+                    "5. Вернуться в основное меню";
 
     public static void start() {
         UserOperationWithAccount userAction = new UserOperationWithAccount();
@@ -66,6 +67,18 @@ public class OperationMenu extends AbstractMenu {
                     );
                     break;
                 case 4:
+                    while (true) {
+                        System.out.println("Введите номер счета:");
+                        String numberAccount = scanner.nextLine();
+                        if (accountDAO.findEntityByNumberAccount(numberAccount) == null) {
+                            System.out.println("Не верно введен счет!");
+                            continue;
+                        }
+                        AccountStatementMenu.start(accountDAO.findEntityByNumberAccount(numberAccount));
+                        break;
+                    }
+                    break;
+                case 5:
                     return;
             }
         }
