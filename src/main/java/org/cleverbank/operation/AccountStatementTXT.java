@@ -40,7 +40,7 @@ public class AccountStatementTXT {
             switch (bankTransaction.getType().getName().toLowerCase()) {
                 case "перевод":
                     description = "Пополнение";
-                    money = bankTransaction.getSumma();
+                    money = bankTransaction.getMoney();
                     if (bankTransaction.getAccountOfSender().getId() == account.getId()) {
                         money -= 2 * money;
                         description += " счета " +
@@ -51,11 +51,11 @@ public class AccountStatementTXT {
                     break;
                 case "снятие средств":
                     description = "Снятие средств";
-                    money = -bankTransaction.getSumma();
+                    money = -bankTransaction.getMoney();
                     break;
                 case "пополнение счета":
                     description = "Пополнение";
-                    money = bankTransaction.getSumma();
+                    money = bankTransaction.getMoney();
                     break;
             }
             bill += String.format("%s| %s | %.2f %s\n",

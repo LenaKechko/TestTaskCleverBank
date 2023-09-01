@@ -16,7 +16,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     public static final String SQL_SELECT_NUMBER_CHECK_BANK_TRANSACTIONS =
             "SELECT number_check FROM transactions " +
-                    "WHERE transaction_date = ? and id_type_of_transaction = ? and sum = ? " +
+                    "WHERE transaction_date = ? and id_type_of_transaction = ? and money = ? " +
                     "and (id_sender = ? or id_sender is null) and (id_receiver = ? or id_receiver is null)";
 
     public static final String SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN =
@@ -25,7 +25,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                     "ORDER BY transaction_date";
 
     public static final String SQL_INSERT_BANK_TRANSACTION =
-            "INSERT INTO transactions(transaction_date, id_type_of_transaction, sum, id_sender, id_receiver) " +
+            "INSERT INTO transactions(transaction_date, id_type_of_transaction, money, id_sender, id_receiver) " +
                     "VALUES (?, ?, ?, ?, ?)";
 
     public static final String SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK = "DELETE FROM transactions WHERE number_check = ?";
@@ -33,7 +33,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
     public static final String SQL_DELETE_BANK_TRANSACTION_DATE = "DELETE FROM transactions WHERE transaction_date = ?";
 
     public static final String SQL_UPDATE_BANK_TRANSACTION =
-            "UPDATE transactions SET transaction_date = ?, id_type_of_transaction = ?, sum = ?, id_sender = ?, id_receiver = ? " +
+            "UPDATE transactions SET transaction_date = ?, id_type_of_transaction = ?, money = ?, id_sender = ?, id_receiver = ? " +
                     "WHERE number_check = ?";
 
     TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
@@ -49,11 +49,11 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 int numberCheck = rs.getInt("number_check");
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double summa = rs.getDouble("sum");
+                Double money = rs.getDouble("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransactions.add(
-                        new BankTransaction(numberCheck, transactionDate, typeTransaction, summa, accountOfSender, accountOfReceiver));
+                        new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver));
             }
 
         } catch (SQLException e) {
@@ -74,10 +74,10 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             while (rs.next()) {
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double summa = rs.getDouble("sum");
+                Double money = rs.getDouble("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
-                bankTransaction = new BankTransaction(numberCheck, transactionDate, typeTransaction, summa, accountOfSender, accountOfReceiver);
+                bankTransaction = new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver);
             }
 
         } catch (SQLException e) {
@@ -103,10 +103,10 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 int numberCheck = rs.getInt("number_check");
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double summa = rs.getDouble("sum");
+                Double money = rs.getDouble("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
-                bankTransactions.add(new BankTransaction(numberCheck, transactionDate, typeTransaction, summa, accountOfSender, accountOfReceiver));
+                bankTransactions.add(new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver));
             }
 
         } catch (SQLException e) {
@@ -122,7 +122,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                      connection.prepareStatement(SQL_SELECT_NUMBER_CHECK_BANK_TRANSACTIONS)) {
             statement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             statement.setInt(2, bankTransaction.getType().getId());
-            statement.setDouble(3, bankTransaction.getSumma());
+            statement.setDouble(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 statement.setNull(4, Types.BIGINT);
             } else {
@@ -177,7 +177,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             preparedStatement.setTimestamp(1,
                     new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
-            preparedStatement.setDouble(3, bankTransaction.getSumma());
+            preparedStatement.setDouble(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 preparedStatement.setNull(4, Types.BIGINT);
             } else {
@@ -202,7 +202,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_TRANSACTION)) {
             preparedStatement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
-            preparedStatement.setDouble(3, bankTransaction.getSumma());
+            preparedStatement.setDouble(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 preparedStatement.setNull(4, Types.BIGINT);
             } else {

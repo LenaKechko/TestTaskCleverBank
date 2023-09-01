@@ -34,7 +34,7 @@ public class ReplenishmentMoney extends Check implements IOperationWithAccount {
         bill += String.format("| Банк получателя: %22s |\n", bankTransaction.getAccountOfSender().getBank().getName());
         bill += String.format("| Счет получателя: %22s |\n", bankTransaction.getAccountOfSender().getNumberAccount());
         bill += String.format("| Сумма: %28.2f %3s |\n",
-                bankTransaction.getSumma(),
+                bankTransaction.getMoney(),
                 bankTransaction.getAccountOfSender().getCurrency().getName());
         bill += "-------------------------------------------";
 

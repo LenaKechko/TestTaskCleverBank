@@ -8,9 +8,13 @@ import org.cleverbank.entities.BankTransaction;
 import org.cleverbank.operation.AccountStatementTXT;
 import org.cleverbank.operation.UserOperationWithAccount;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -48,20 +52,21 @@ public class AccountStatementMenu extends AbstractMenu {
                     AccountStatementTXT.generateStatement(account, bankTransactions, dateStartOfYear, dateEndOfYear);
                     break;
                 case 3:
-                    LocalDate dateStart = account.getOpeningDate()
-                            .toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate();
+                    LocalDate dateStart =
+                            Instant.ofEpochMilli(account.getOpeningDate().getTime())
+                                    .atZone(ZoneId.systemDefault()).toLocalDate();
                     LocalDate dateEnd = dateNow;
                     bankTransactions =
                             bankTransactionDAO.findEntityByDate(dateStart, dateEnd, account);
-                    AccountStatementTXT.generateStatement(account, bankTransactions, dateStart, dateEnd);
+                    AccountStatementTXT
+                            .generateStatement(account, bankTransactions, dateStart, dateEnd);
                     break;
                 case 4:
-                    System.out.println("Введите начальную дату:");
-                    LocalDate dateStartPeriod = LocalDate.parse(scanner.nextLine());
-                    System.out.println("Введите конечную дату:");
-                    LocalDate dateEndPeriod = LocalDate.parse(scanner.nextLine());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    System.out.println("Введите начальную дату (дд-мм-гггг):");
+                    LocalDate dateStartPeriod = LocalDate.parse(scanner.nextLine(), formatter);
+                    System.out.println("Введите конечную дату (дд-мм-гггг):");
+                    LocalDate dateEndPeriod = LocalDate.parse(scanner.nextLine(), formatter);
                     bankTransactions =
                             bankTransactionDAO.findEntityByDate(dateStartPeriod, dateEndPeriod, account);
                     AccountStatementTXT.generateStatement(account, bankTransactions, dateStartPeriod, dateEndPeriod);

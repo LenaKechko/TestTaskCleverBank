@@ -18,7 +18,7 @@ public class Check {
     public BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, double money, TypeTransaction type) {
         BankTransaction check = new BankTransaction();
         check.setTransactionDate(Date.from(Instant.now()));
-        check.setSumma(money);
+        check.setMoney(money);
         check.setType(type);
         check.setAccountOfSender(senderAccount);
         check.setAccountOfReceiver(receiverAccount);

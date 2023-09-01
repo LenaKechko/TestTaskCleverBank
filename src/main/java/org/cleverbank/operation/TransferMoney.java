@@ -25,7 +25,7 @@ public class TransferMoney extends Check implements IOperationWithAccount {
         bill += String.format("| Счет отправителя: %21s |\n", bankTransaction.getAccountOfSender().getNumberAccount());
         bill += String.format("| Счет получателя: %22s |\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
         bill += String.format("| Сумма: %28.2f %3s |\n",
-                bankTransaction.getSumma(),
+                bankTransaction.getMoney(),
                 bankTransaction.getAccountOfSender().getCurrency().getName());
         bill += "-------------------------------------------";
 

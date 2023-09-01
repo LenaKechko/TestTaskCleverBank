@@ -28,7 +28,7 @@ public class WithdrawalMoney extends Check implements IOperationWithAccount {
         bill += String.format("| Банк клиента: %25s |\n", bankTransaction.getAccountOfReceiver().getBank().getName());
         bill += String.format("| Счет клиента: %25s |\n", bankTransaction.getAccountOfReceiver().getNumberAccount());
         bill += String.format("| Сумма: %28.2f %3s |\n",
-                bankTransaction.getSumma(),
+                bankTransaction.getMoney(),
                 bankTransaction.getAccountOfReceiver().getCurrency().getName());
         bill += "-------------------------------------------";
 
