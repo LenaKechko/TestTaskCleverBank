@@ -9,5 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 public class TypeTransaction {
     private int id;
-    private String name;
+    private TypeTransactionEnum name;
 }

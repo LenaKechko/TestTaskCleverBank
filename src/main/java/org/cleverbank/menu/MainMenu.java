@@ -1,17 +1,15 @@
-package org.cleverbank.Menu;
-
-import org.cleverbank.entities.User;
+package org.cleverbank.menu;
 
 import java.util.Scanner;
 
 public class MainMenu extends AbstractMenu {
 
     private final static String MAIN_MENU =
-            "1. Execute account operation\n" +
-                    "2. Operations with users\n" +
-                    "3. Operations with account\n" +
-                    "4. Operations with banks\n" +
-                    "5. Close the application";
+            "1. Выполнение операций с аккаунтом\n" +
+                    "2. Операции с пользователями\n" +
+                    "3. Операции со счетами\n" +
+                    "4. Операции с банками\n" +
+                    "5. Завершить работу приложения";
 
     public static void start() {
         while (true) {

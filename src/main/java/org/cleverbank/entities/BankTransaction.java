@@ -2,7 +2,6 @@ package org.cleverbank.entities;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -15,7 +14,7 @@ public class BankTransaction {
     private int numberCheck;
     private Date transactionDate;
     private TypeTransaction type;
-    private Double summa;
+    private Double money;
     private Account accountOfSender;
     private Account accountOfReceiver;
 }

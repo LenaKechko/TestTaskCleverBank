@@ -14,4 +14,11 @@ public class User {
     private String middleName;
     private String address;
     private String phoneNumber;
+
+
+    public User(String lastName, String name, String middleName) {
+        this.lastName = lastName;
+        this.name = name;
+        this.middleName = middleName;
+    }
 }

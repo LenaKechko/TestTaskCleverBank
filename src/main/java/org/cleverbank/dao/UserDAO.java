@@ -1,7 +1,6 @@
-package org.cleverbank.DAO;
+package org.cleverbank.dao;
 
 import org.cleverbank.entities.User;
-import org.cleverbank.ConnectorDB;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,8 +24,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_USERS);
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -46,8 +44,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
     @Override
     public User findEntityById(Integer id) {
         User user = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_USER_ID)) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -66,14 +63,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return user;
     }
 
-    public Integer findEntityByFullName(String lastName, String name, String middleName) {
-        Integer id = 0;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+    public Integer findEntityByFullName(User user) {
+        int id = 0;
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_USER_FULLNAME)) {
-            statement.setString(1, lastName);
-            statement.setString(2, name);
-            statement.setString(3, middleName);
+            statement.setString(1, user.getLastName());
+            statement.setString(2, user.getName());
+            statement.setString(3, user.getMiddleName());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 id = rs.getInt("id");
@@ -86,9 +82,8 @@ public class UserDAO extends AbstractDAO<Integer, User> {
 
     @Override
     public boolean delete(Integer id) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_ID)) {
-            preparedStatement.setString(1, String.valueOf(id));
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_ID)) {
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -99,8 +94,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
 
     @Override
     public boolean delete(User user) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_FULLNAME)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_FULLNAME)) {
             preparedStatement.setString(1, user.getLastName());
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getMiddleName());
@@ -114,8 +108,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
 
     @Override
     public boolean create(User user) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER)) {
             preparedStatement.setString(1, user.getLastName());
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getMiddleName());
@@ -131,8 +124,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
 
     @Override
     public boolean update(User user) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER)) {
             preparedStatement.setString(1, user.getLastName());
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getMiddleName());

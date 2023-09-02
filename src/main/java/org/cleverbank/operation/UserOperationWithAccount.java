@@ -1,30 +1,50 @@
 package org.cleverbank.operation;
 
+import org.cleverbank.dao.BankTransactionDAO;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
+import org.cleverbank.entities.TypeTransaction;
+import org.cleverbank.entities.TypeTransactionEnum;
 
 public class UserOperationWithAccount {
+
+
     private IOperationWithAccount operation;
 
-    public void runOperation(String nameOperation, Account senderAccount, Account receiverAccount, int money) {
+    public void runOperation(TypeTransaction typeTransaction, Account senderAccount, Account receiverAccount, double money) {
         BankTransaction operationCheck = null;
-        switch (nameOperation) {
-            case "перевод":
-                operation = new TransferMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
-                break;
-            case "снятие средств":
-                operation = new WithdrawalMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
+        BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
+        TransactionDB transactionDB = new TransactionDB();
 
+        switch (typeTransaction.getName()) {
+            case TRANSFER:
+                operation = new TransferMoney();
                 break;
-            case "пополнение счета":
+            case WITHDRAWAL:
+                operation = new WithdrawalMoney();
+                break;
+            case REPLENISHMENT:
                 operation = new ReplenishmentMoney();
-                operation.startOperation(senderAccount, receiverAccount, money);
-                operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, 1);
                 break;
+        }
+        try {
+            transactionDB.initTransaction(bankTransactionDAO);
+
+            transactionDB = operation.startOperation(transactionDB, senderAccount, receiverAccount, money);
+            operationCheck = operation.generateBankTransaction(senderAccount, receiverAccount, money, typeTransaction);
+            bankTransactionDAO.create(operationCheck);
+            int numberCheck = bankTransactionDAO.findNumberCheckByBankTransaction(operationCheck);
+            operationCheck.setNumberCheck(numberCheck);
+            String bill = operation.generateCheck(operationCheck);
+            operation.printCheck(bill, "check" + operationCheck.getNumberCheck());
+
+            transactionDB.commit();
+        } catch (Exception e) {
+            transactionDB.rollback();
+            e.printStackTrace();
+        } finally {
+            transactionDB.endTransaction();
         }
     }
 }
