@@ -1,14 +1,11 @@
 package org.cleverbank.menu;
 
-import org.cleverbank.dao.BankTransactionDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.entities.BankTransaction;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AccountStatementMenu extends AbstractMenu {
@@ -25,8 +22,6 @@ public class AccountStatementMenu extends AbstractMenu {
             printMenu(ACCOUNT_STATEMENT_MENU);
             Scanner sc = new Scanner(System.in);
             Scanner scanner = new Scanner(System.in);
-            BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
-            ArrayList<BankTransaction> bankTransactions = null;
             LocalDate dateNow = LocalDate.now(), dateStartPeriod = null, dateEndPeriod = null;
             switch (sc.nextInt()) {
                 case 1:

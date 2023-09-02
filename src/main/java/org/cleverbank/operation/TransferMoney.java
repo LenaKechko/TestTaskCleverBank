@@ -1,19 +1,16 @@
 package org.cleverbank.operation;
 
+import org.cleverbank.dao.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
-import org.cleverbank.entities.TypeTransaction;
 
 public class TransferMoney extends Check implements IOperationWithAccount {
-    public void startOperation(Account senderAccount, Account receiverAccount, double money) {
+    public TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, double money) {
         ReplenishmentMoney operationSender = new ReplenishmentMoney();
-        operationSender.startOperation(null, receiverAccount, money);
+        transactionDB = operationSender.startOperation(transactionDB, null, receiverAccount, money);
         WithdrawalMoney operationReceiver = new WithdrawalMoney();
-        operationReceiver.startOperation(senderAccount, null, money);
-    }
-
-    public BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, double money, TypeTransaction type) {
-        return super.generateBankTransaction(senderAccount, receiverAccount, money, type);
+        transactionDB = operationReceiver.startOperation(transactionDB, senderAccount, null, money);
+        return transactionDB;
     }
 
     @Override
@@ -32,8 +29,4 @@ public class TransferMoney extends Check implements IOperationWithAccount {
         return bill;
     }
 
-    @Override
-    public void printCheck(String bill, String fileName) {
-        super.printCheck(bill, fileName);
-    }
 }

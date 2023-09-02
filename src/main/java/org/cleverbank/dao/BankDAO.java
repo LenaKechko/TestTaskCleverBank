@@ -1,6 +1,5 @@
 package org.cleverbank.dao;
 
-import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.Bank;
 
 import java.sql.*;
@@ -25,8 +24,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
     @Override
     public List<Bank> findAll() {
         List<Bank> banks = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_BANKS);
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -43,8 +41,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
     @Override
     public Bank findEntityById(Integer id) {
         Bank bank = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_ID)) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -61,9 +58,8 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
     }
 
     public Integer findEntityByName(String name) {
-        Integer id = 0;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        int id = 0;
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_NAME)) {
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
@@ -78,8 +74,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
 
     @Override
     public boolean delete(Integer id) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_ID)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
@@ -91,8 +86,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
 
     @Override
     public boolean delete(Bank bank) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_NAME)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_NAME)) {
             preparedStatement.setString(1, bank.getName());
             preparedStatement.executeUpdate();
             return true;
@@ -104,8 +98,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
 
     @Override
     public boolean create(Bank bank) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_BANK)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_BANK)) {
             preparedStatement.setString(1, bank.getName());
             preparedStatement.setString(2, bank.getAddress());
             preparedStatement.executeUpdate();
@@ -118,8 +111,7 @@ public class BankDAO extends AbstractDAO<Integer, Bank> {
 
     @Override
     public boolean update(Bank bank) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK)) {
             preparedStatement.setString(1, bank.getName());
             preparedStatement.setString(2, bank.getAddress());
             preparedStatement.setInt(3, bank.getId());

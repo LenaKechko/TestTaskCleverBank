@@ -27,34 +27,10 @@ public class WriterPDF implements IWriter {
             Paragraph paragraph = new Paragraph(text, font);
             document.add(paragraph);
             document.close();
-        } catch (DocumentException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
+        } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        try {
-//            PDDocument document = new PDDocument();
-//            PDPage page = new PDPage();
-//            document.addPage(page);
-//            PDPageContentStream contentStream = new PDPageContentStream(document, page);
-//
-//            PDFont font = PDType1Font.TIMES_ROMAN;
-//            contentStream.beginText();
-//            contentStream.setFont(font, 14);
-//            contentStream.setLeading(14.5f);
-//            contentStream.newLineAtOffset(100, 700);
-//            for (String line : text.split("\n")) {
-//                contentStream.showText(line);
-//                contentStream.newLine();
-//            }
-//            contentStream.endText();
-//            contentStream.close();
-//            document.save(fileName + ".pdf");
-//            document.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 }

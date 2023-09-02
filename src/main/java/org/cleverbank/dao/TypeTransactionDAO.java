@@ -1,6 +1,5 @@
 package org.cleverbank.dao;
 
-import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.TypeTransaction;
 
 import java.sql.*;
@@ -16,8 +15,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
     @Override
     public List<TypeTransaction> findAll() {
         ArrayList<TypeTransaction> typeTransactions = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_TYPE_TRANSACTION);
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -33,8 +31,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
     @Override
     public TypeTransaction findEntityById(Integer id) {
         TypeTransaction typeTransaction = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_TYPE_TRANSACTION_ID)) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
@@ -51,8 +48,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
 
     public TypeTransaction findEntityByType(String type) {
         TypeTransaction typeTransaction = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_TYPE_TRANSACTION_TYPE)) {
             statement.setString(1, type);
             ResultSet rs = statement.executeQuery();

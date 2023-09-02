@@ -26,12 +26,12 @@ public class WriterMenu extends AbstractMenu {
                 case 1:
                     IWriter writerPDF = new WriterPDF();
                     writer = new Writer(writerPDF);
-                    writer.runWriter(accountStatement, "statement" + account.getNumberAccount());
+                    writer.runWriter(accountStatement, "statement\\statement" + account.getNumberAccount());
                     break;
                 case 2:
                     IWriter writerTXT = new WriterTXT();
                     writer = new Writer(writerTXT);
-                    writer.runWriter(accountStatement, "statement" + account.getNumberAccount());
+                    writer.runWriter(accountStatement, "statement\\statement" + account.getNumberAccount());
                     break;
                 case 3:
                     return;
@@ -39,4 +39,5 @@ public class WriterMenu extends AbstractMenu {
             }
         }
     }
+
 }

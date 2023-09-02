@@ -3,15 +3,13 @@ package org.cleverbank.operation;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 import org.cleverbank.entities.TypeTransaction;
+import org.cleverbank.writer.IWriter;
+import org.cleverbank.writer.Writer;
+import org.cleverbank.writer.WriterTXT;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Check {
 
@@ -26,7 +24,7 @@ public class Check {
     }
     public String generateCheck(BankTransaction bankTransaction) {
         String bill = "-------------------------------------------\n";
-        bill += String.format("|            Банковский чек               |\n");
+        bill += "|            Банковский чек               |\n";
         bill += String.format("| Чек: %34d |\n", bankTransaction.getNumberCheck());
         SimpleDateFormat formatterForDate = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat formatterForTime = new SimpleDateFormat("HH:mm:ss");
@@ -38,13 +36,8 @@ public class Check {
     }
 
     public void printCheck(String bill, String fileName) {
-        try (FileWriter output = new FileWriter("check/" + fileName, false)) {
-            output.write(bill);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        IWriter writerTXT = new WriterTXT();
+        Writer writer  = new Writer(writerTXT);
+        writer.runWriter(bill, "check\\"+ fileName);
     }
-
 }

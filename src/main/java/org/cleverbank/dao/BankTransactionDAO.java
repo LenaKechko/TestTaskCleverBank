@@ -1,6 +1,5 @@
 package org.cleverbank.dao;
 
-import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.*;
 
 import java.sql.*;
@@ -38,13 +37,14 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
     AccountDAO accountDao = new AccountDAO();
+    TransactionDB transactionDB = new TransactionDB();
 
     @Override
     public List<BankTransaction> findAll() {
         List<BankTransaction> bankTransactions = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_BANK_TRANSACTIONS);
+            transactionDB.initTransaction(typeTransactionDAO, accountDao);
             while (rs.next()) {
                 int numberCheck = rs.getInt("number_check");
                 Date transactionDate = rs.getDate("transaction_date");
@@ -53,11 +53,16 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransactions.add(
-                        new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver));
+                        new BankTransaction(numberCheck, transactionDate, typeTransaction,
+                                money, accountOfSender, accountOfReceiver));
+                transactionDB.commit();
             }
 
         } catch (SQLException e) {
+            transactionDB.rollback();
             System.out.println(e.getMessage());
+        } finally {
+            transactionDB.endTransaction();
         }
         return bankTransactions;
     }
@@ -66,9 +71,9 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
     @Override
     public BankTransaction findEntityById(Integer numberCheck) {
         BankTransaction bankTransaction = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_TRANSACTIONS_NUMBER_CHECK)) {
+            transactionDB.initTransaction(typeTransactionDAO, accountDao);
             statement.setInt(1, numberCheck);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -78,19 +83,23 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransaction = new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver);
+                transactionDB.commit();
             }
 
         } catch (SQLException e) {
+            transactionDB.rollback();
             System.out.println(e.getMessage());
+        } finally {
+            transactionDB.endTransaction();
         }
         return bankTransaction;
     }
 
     public ArrayList<BankTransaction> findEntityByDate(LocalDate startDate, LocalDate finishDate, Account account) {
         ArrayList<BankTransaction> bankTransactions = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN)) {
+            transactionDB.initTransaction(typeTransactionDAO, accountDao);
             statement.setInt(1, account.getId());
             statement.setInt(2, account.getId());
             statement.setTimestamp(3,
@@ -107,18 +116,21 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransactions.add(new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver));
+                transactionDB.commit();
             }
 
         } catch (SQLException e) {
+            transactionDB.rollback();
             System.out.println(e.getMessage());
+        } finally {
+            transactionDB.endTransaction();
         }
         return bankTransactions;
     }
 
     public Integer findNumberCheckByBankTransaction(BankTransaction bankTransaction) {
         Integer id = 0;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_NUMBER_CHECK_BANK_TRANSACTIONS)) {
             statement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             statement.setInt(2, bankTransaction.getType().getId());
@@ -146,8 +158,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     @Override
     public boolean delete(Integer numberCheck) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK)) {
             preparedStatement.setInt(1, numberCheck);
             preparedStatement.executeUpdate();
             return true;
@@ -159,8 +170,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     @Override
     public boolean delete(BankTransaction bankTransaction) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_DATE)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_DATE)) {
             preparedStatement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.executeUpdate();
             return true;
@@ -172,8 +182,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     @Override
     public boolean create(BankTransaction bankTransaction) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_BANK_TRANSACTION)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_BANK_TRANSACTION)) {
             preparedStatement.setTimestamp(1,
                     new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
@@ -198,8 +207,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
 
     @Override
     public boolean update(BankTransaction bankTransaction) {
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_TRANSACTION)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_TRANSACTION)) {
             preparedStatement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
             preparedStatement.setDouble(3, bankTransaction.getMoney());

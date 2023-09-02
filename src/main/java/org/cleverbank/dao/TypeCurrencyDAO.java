@@ -1,6 +1,5 @@
 package org.cleverbank.dao;
 
-import org.cleverbank.ConnectorDB;
 import org.cleverbank.entities.TypeCurrency;
 
 import java.sql.*;
@@ -14,8 +13,7 @@ public class TypeCurrencyDAO extends AbstractDAO<Integer, TypeCurrency> {
     @Override
     public List<TypeCurrency> findAll() {
         ArrayList<TypeCurrency> typeCurrencies = new ArrayList<>();
-        try (Connection connection = ConnectorDB.getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_CURRENCY);
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -31,8 +29,7 @@ public class TypeCurrencyDAO extends AbstractDAO<Integer, TypeCurrency> {
     @Override
     public TypeCurrency findEntityById(Integer id) {
         TypeCurrency typeCurrency = null;
-        try (Connection connection = ConnectorDB.getConnection();
-             PreparedStatement statement =
+        try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_CURRENCY_ID)) {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();

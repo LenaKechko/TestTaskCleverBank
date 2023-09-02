@@ -1,8 +1,8 @@
 package org.cleverbank.menu;
 
 import org.cleverbank.dao.AccountDAO;
+import org.cleverbank.dao.TransactionDB;
 import org.cleverbank.dao.TypeTransactionDAO;
-import org.cleverbank.entities.TypeTransaction;
 import org.cleverbank.operation.UserOperationWithAccount;
 
 import java.util.Scanner;
@@ -20,6 +20,8 @@ public class OperationMenu extends AbstractMenu {
         UserOperationWithAccount userAction = new UserOperationWithAccount();
         TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
         AccountDAO accountDAO = new AccountDAO();
+        TransactionDB transactionDB = new TransactionDB();
+        transactionDB.initTransaction(typeTransactionDAO, accountDAO);
         String numberAccountReceiver, numberAccountSender;
         Double money;
         while (true) {
@@ -28,54 +30,83 @@ public class OperationMenu extends AbstractMenu {
             Scanner scanner = new Scanner(System.in);
             switch (sc.nextInt()) {
                 case 1:
-                    System.out.println("Введите номер счета отправителя:");
-                    numberAccountSender = scanner.nextLine();
-                    System.out.println("Введите номер счета получателя:");
-                    numberAccountReceiver = scanner.nextLine();
-                    System.out.println("Введите сумму:");
-                    money = scanner.nextDouble();
-                    userAction.runOperation(
-                            typeTransactionDAO.findEntityByType("Перевод"),
-                            accountDAO.findEntityByNumberAccount(numberAccountSender),
-                            accountDAO.findEntityByNumberAccount(numberAccountReceiver),
-                            money
-                    );
+                    try {
+                        System.out.println("Введите номер счета отправителя:");
+                        numberAccountSender = scanner.nextLine();
+                        System.out.println("Введите номер счета получателя:");
+                        numberAccountReceiver = scanner.nextLine();
+                        System.out.println("Введите сумму:");
+                        money = scanner.nextDouble();
+                        userAction.runOperation(
+                                typeTransactionDAO.findEntityByType("Перевод"),
+                                accountDAO.findEntityByNumberAccount(numberAccountSender),
+                                accountDAO.findEntityByNumberAccount(numberAccountReceiver),
+                                money);
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 2:
-                    System.out.println("Введите номер счета, с которого снимаются средства:");
-                    numberAccountReceiver = scanner.nextLine();
-                    System.out.println("Введите сумму:");
-                    money = scanner.nextDouble();
+                    try {
+                        System.out.println("Введите номер счета, с которого снимаются средства:");
+                        numberAccountReceiver = scanner.nextLine();
+                        System.out.println("Введите сумму:");
+                        money = scanner.nextDouble();
 
-                    userAction.runOperation(
-                            typeTransactionDAO.findEntityByType("Снятие средств"),
-                            null,
-                            accountDAO.findEntityByNumberAccount(numberAccountReceiver),
-                            money
-                    );
+                        userAction.runOperation(
+                                typeTransactionDAO.findEntityByType("Снятие средств"),
+                                null,
+                                accountDAO.findEntityByNumberAccount(numberAccountReceiver),
+                                money);
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 3:
-                    System.out.println("Введите номер, пополняемого счета:");
-                    numberAccountSender = scanner.nextLine();
-                    System.out.println("Введите сумму:");
-                    money = scanner.nextDouble();
+                    try {
+                        System.out.println("Введите номер, пополняемого счета:");
+                        numberAccountSender = scanner.nextLine();
+                        System.out.println("Введите сумму:");
+                        money = scanner.nextDouble();
 
-                    userAction.runOperation(
-                            typeTransactionDAO.findEntityByType("Пополнение счета"),
-                            accountDAO.findEntityByNumberAccount(numberAccountSender),
-                            null, money
-                    );
+                        userAction.runOperation(
+                                typeTransactionDAO.findEntityByType("Пополнение счета"),
+                                accountDAO.findEntityByNumberAccount(numberAccountSender),
+                                null, money);
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 4:
-                    while (true) {
-                        System.out.println("Введите номер счета:");
-                        String numberAccount = scanner.nextLine();
-                        if (accountDAO.findEntityByNumberAccount(numberAccount) == null) {
-                            System.out.println("Не верно введен счет!");
-                            continue;
+                    try {
+                        while (true) {
+                            System.out.println("Введите номер счета:");
+                            String numberAccount = scanner.nextLine();
+                            if (accountDAO.findEntityByNumberAccount(numberAccount) == null) {
+                                System.out.println("Не верно введен счет!");
+                                continue;
+                            }
+                            AccountStatementMenu.start(accountDAO.findEntityByNumberAccount(numberAccount));
+                            transactionDB.commit();
+                            break;
                         }
-                        AccountStatementMenu.start(accountDAO.findEntityByNumberAccount(numberAccount));
-                        break;
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 5:

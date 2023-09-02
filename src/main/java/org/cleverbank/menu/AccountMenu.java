@@ -2,6 +2,7 @@ package org.cleverbank.menu;
 
 import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.entities.Account;
+import org.cleverbank.dao.TransactionDB;
 import org.cleverbank.menu.action.AccountMenuAction;
 
 import java.util.ArrayList;
@@ -22,38 +23,73 @@ public class AccountMenu extends AbstractMenu {
             Scanner sc = new Scanner(System.in);
             Scanner scanner = new Scanner(System.in);
             AccountDAO accountDAO = new AccountDAO();
+            TransactionDB transactionDB = new TransactionDB();
+            transactionDB.initTransaction(accountDAO);
             switch (sc.nextInt()) {
                 case 1:
-                    ArrayList<Account> accounts = (ArrayList<Account>) accountDAO.findAll();
-                    for (Account account : accounts)
-                        System.out.println(account.toString());
+                    try {
+                        ArrayList<Account> accounts = (ArrayList<Account>) accountDAO.findAll();
+                        transactionDB.commit();
+                        for (Account account : accounts)
+                            System.out.println(account.toString());
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 2:
-                    accountDAO.create(AccountMenuAction.create());
+                    try {
+                        accountDAO.create(AccountMenuAction.create());
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 3:
-                    Account account = AccountMenuAction.enterUserFullName();
-                    if (account == null) {
-                        System.out.println("Такого пользователя не существует!");
-                    } else {
-                        accountDAO.delete(account);
-                        System.out.println("Удаление произведено успешно");
+                    try {
+                        Account account = AccountMenuAction.enterUserFullName();
+                        if (account == null) {
+                            System.out.println("Такого пользователя не существует!");
+                        } else {
+                            accountDAO.delete(account);
+                            transactionDB.commit();
+                            System.out.println("Удаление произведено успешно");
+                        }
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 4:
-                    Account accountUpdate = AccountMenuAction.enterUserFullName();
-                    if (accountUpdate == null) {
-                        System.out.println("Такого пользователя не существует!");
-                    } else {
-                        System.out.println(accountUpdate);
-                        accountUpdate = AccountMenuAction.update(accountUpdate);
-                        accountDAO.update(accountUpdate);
-                        System.out.println("Данные успешно изменены");
+                    try {
+                        Account accountUpdate = AccountMenuAction.enterUserFullName();
+                        if (accountUpdate == null) {
+                            System.out.println("Такого пользователя не существует!");
+                        } else {
+                            System.out.println(accountUpdate);
+                            accountUpdate = AccountMenuAction.update(accountUpdate);
+                            accountDAO.update(accountUpdate);
+                            transactionDB.commit();
+                            System.out.println("Данные успешно изменены");
+                        }
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 5:
                     return;
             }
+
         }
     }
 }

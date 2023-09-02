@@ -1,6 +1,7 @@
 package org.cleverbank.menu;
 
 import org.cleverbank.dao.BankDAO;
+import org.cleverbank.dao.TransactionDB;
 import org.cleverbank.entities.Bank;
 import org.cleverbank.menu.action.BankMenuAction;
 
@@ -16,41 +17,77 @@ public class BankMenu extends AbstractMenu {
                     "5. Вернуться в главное меню";
 
     public static void start() {
+        TransactionDB transactionDB = new TransactionDB();
         while (true) {
             printMenu(BANK_MENU);
             Scanner sc = new Scanner(System.in);
             Scanner scanner = new Scanner(System.in);
             BankDAO bankDAO = new BankDAO();
+            transactionDB.initTransaction(bankDAO);
             String name, middleName;
             Integer id;
             switch (sc.nextInt()) {
                 case 1:
-                    ArrayList<Bank> banks = (ArrayList<Bank>) bankDAO.findAll();
-                    for (Bank bank : banks) {
-                        System.out.println(bank.toString());
+                    try {
+                        ArrayList<Bank> banks = (ArrayList<Bank>) bankDAO.findAll();
+                        for (Bank bank : banks) {
+                            System.out.println(bank.toString());
+                        }
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 2:
-                    bankDAO.create(BankMenuAction.create());
+                    try {
+                        bankDAO.create(BankMenuAction.create());
+                        transactionDB.commit();
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
+                    }
                     break;
                 case 3:
-                    id = bankDAO.findEntityByName(BankMenuAction.enterName());
-                    if (id != 0) {
-                        bankDAO.delete(id);
-                        System.out.println("Удаление произведено успешно");
-                    } else {
-                        System.out.println("Нет такого банка!");
+                    try {
+                        id = bankDAO.findEntityByName(BankMenuAction.enterName());
+                        transactionDB.commit();
+                        if (id != 0) {
+                            bankDAO.delete(id);
+                            transactionDB.commit();
+                            System.out.println("Удаление произведено успешно");
+                        } else {
+                            System.out.println("Нет такого банка!");
+                        }
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 4:
-                    id = bankDAO.findEntityByName(BankMenuAction.enterName());
-                    if (id != 0) {
-                        Bank bankUpdate = bankDAO.findEntityById(id);
-                        bankUpdate = BankMenuAction.update(bankUpdate);
-                        bankDAO.update(bankUpdate);
-                        System.out.println("Данные успешно изменены");
-                    } else {
-                        System.out.println("Банк для изменений не найден!");
+                    try {
+                        id = bankDAO.findEntityByName(BankMenuAction.enterName());
+                        transactionDB.commit();
+                        if (id != 0) {
+                            Bank bankUpdate = bankDAO.findEntityById(id);
+                            bankUpdate = BankMenuAction.update(bankUpdate);
+                            bankDAO.update(bankUpdate);
+                            transactionDB.commit();
+                            System.out.println("Данные успешно изменены");
+                        } else {
+                            System.out.println("Банк для изменений не найден!");
+                        }
+                    } catch (Exception e) {
+                        transactionDB.rollback();
+                        e.printStackTrace();
+                    } finally {
+                        transactionDB.endTransaction();
                     }
                     break;
                 case 5:
