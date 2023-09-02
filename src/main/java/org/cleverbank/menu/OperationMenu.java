@@ -1,8 +1,9 @@
 package org.cleverbank.menu;
 
 import org.cleverbank.dao.AccountDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.dao.TypeTransactionDAO;
+import org.cleverbank.entities.TypeTransactionEnum;
 import org.cleverbank.operation.UserOperationWithAccount;
 
 import java.util.Scanner;
@@ -10,26 +11,27 @@ import java.util.Scanner;
 public class OperationMenu extends AbstractMenu {
 
     private final static String OPERATION_MENU =
-            "1. Перевод денежных средств на другой аккаунт\n" +
-                    "2. Снятие средств\n" +
-                    "3. Пополнение счета\n" +
-                    "4. Запросить выписку за период\n" +
-                    "5. Вернуться в основное меню";
+            """
+                    1. Перевод денежных средств на другой аккаунт
+                    2. Снятие средств
+                    3. Пополнение счета
+                    4. Запросить выписку за период
+                    5. Вернуться в основное меню""";
 
     public static void start() {
         UserOperationWithAccount userAction = new UserOperationWithAccount();
         TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
         AccountDAO accountDAO = new AccountDAO();
         TransactionDB transactionDB = new TransactionDB();
-        transactionDB.initTransaction(typeTransactionDAO, accountDAO);
         String numberAccountReceiver, numberAccountSender;
         Double money;
         while (true) {
             printMenu(OPERATION_MENU);
+            transactionDB.initTransaction(typeTransactionDAO, accountDAO);
             Scanner sc = new Scanner(System.in);
             Scanner scanner = new Scanner(System.in);
             switch (sc.nextInt()) {
-                case 1:
+                case 1 -> {
                     try {
                         System.out.println("Введите номер счета отправителя:");
                         numberAccountSender = scanner.nextLine();
@@ -38,7 +40,7 @@ public class OperationMenu extends AbstractMenu {
                         System.out.println("Введите сумму:");
                         money = scanner.nextDouble();
                         userAction.runOperation(
-                                typeTransactionDAO.findEntityByType("Перевод"),
+                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.TRANSFER),
                                 accountDAO.findEntityByNumberAccount(numberAccountSender),
                                 accountDAO.findEntityByNumberAccount(numberAccountReceiver),
                                 money);
@@ -49,8 +51,8 @@ public class OperationMenu extends AbstractMenu {
                     } finally {
                         transactionDB.endTransaction();
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     try {
                         System.out.println("Введите номер счета, с которого снимаются средства:");
                         numberAccountReceiver = scanner.nextLine();
@@ -58,7 +60,7 @@ public class OperationMenu extends AbstractMenu {
                         money = scanner.nextDouble();
 
                         userAction.runOperation(
-                                typeTransactionDAO.findEntityByType("Снятие средств"),
+                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.WITHDRAWAL),
                                 null,
                                 accountDAO.findEntityByNumberAccount(numberAccountReceiver),
                                 money);
@@ -69,8 +71,8 @@ public class OperationMenu extends AbstractMenu {
                     } finally {
                         transactionDB.endTransaction();
                     }
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     try {
                         System.out.println("Введите номер, пополняемого счета:");
                         numberAccountSender = scanner.nextLine();
@@ -78,7 +80,7 @@ public class OperationMenu extends AbstractMenu {
                         money = scanner.nextDouble();
 
                         userAction.runOperation(
-                                typeTransactionDAO.findEntityByType("Пополнение счета"),
+                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.REPLENISHMENT),
                                 accountDAO.findEntityByNumberAccount(numberAccountSender),
                                 null, money);
                         transactionDB.commit();
@@ -88,8 +90,8 @@ public class OperationMenu extends AbstractMenu {
                     } finally {
                         transactionDB.endTransaction();
                     }
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     try {
                         while (true) {
                             System.out.println("Введите номер счета:");
@@ -108,9 +110,10 @@ public class OperationMenu extends AbstractMenu {
                     } finally {
                         transactionDB.endTransaction();
                     }
-                    break;
-                case 5:
+                }
+                case 5 -> {
                     return;
+                }
             }
         }
     }

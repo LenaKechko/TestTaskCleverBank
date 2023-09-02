@@ -25,6 +25,5 @@ public class Runner {
         }
 
         MainMenu.start();
-
     }
 }

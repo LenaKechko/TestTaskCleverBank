@@ -1,10 +1,10 @@
 package org.cleverbank.operation;
 
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 
-public class TransferMoney extends Check implements IOperationWithAccount {
+public class TransferMoney implements IOperationWithAccount {
     public TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, double money) {
         ReplenishmentMoney operationSender = new ReplenishmentMoney();
         transactionDB = operationSender.startOperation(transactionDB, null, receiverAccount, money);
@@ -15,7 +15,7 @@ public class TransferMoney extends Check implements IOperationWithAccount {
 
     @Override
     public String generateCheck(BankTransaction bankTransaction) {
-        String bill = super.generateCheck(bankTransaction);
+        String bill = IOperationWithAccount.generateCheckHeader(bankTransaction);
 
         bill += String.format("| Банк отправителя: %21s |\n", bankTransaction.getAccountOfSender().getBank().getName());
         bill += String.format("| Банк получателя: %22s |\n", bankTransaction.getAccountOfReceiver().getBank().getName());

@@ -1,12 +1,15 @@
 package org.cleverbank.operation;
 
 import org.cleverbank.dao.BankTransactionDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 import org.cleverbank.entities.TypeTransaction;
+import org.cleverbank.entities.TypeTransactionEnum;
 
 public class UserOperationWithAccount {
+
+
     private IOperationWithAccount operation;
 
     public void runOperation(TypeTransaction typeTransaction, Account senderAccount, Account receiverAccount, double money) {
@@ -14,14 +17,14 @@ public class UserOperationWithAccount {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         TransactionDB transactionDB = new TransactionDB();
 
-        switch (typeTransaction.getName().toLowerCase()) {
-            case "перевод":
+        switch (typeTransaction.getName()) {
+            case TRANSFER:
                 operation = new TransferMoney();
                 break;
-            case "снятие средств":
+            case WITHDRAWAL:
                 operation = new WithdrawalMoney();
                 break;
-            case "пополнение счета":
+            case REPLENISHMENT:
                 operation = new ReplenishmentMoney();
                 break;
         }
@@ -34,7 +37,7 @@ public class UserOperationWithAccount {
             int numberCheck = bankTransactionDAO.findNumberCheckByBankTransaction(operationCheck);
             operationCheck.setNumberCheck(numberCheck);
             String bill = operation.generateCheck(operationCheck);
-            operation.printCheck(bill, "check" + operationCheck.getNumberCheck() + ".txt");
+            operation.printCheck(bill, "check" + operationCheck.getNumberCheck());
 
             transactionDB.commit();
         } catch (Exception e) {

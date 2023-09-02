@@ -1,7 +1,7 @@
 package org.cleverbank.operation;
 
 import org.cleverbank.dao.AccountDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 
 import java.util.ArrayList;

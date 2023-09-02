@@ -1,13 +1,13 @@
 package org.cleverbank.menu.action;
 
 import org.cleverbank.dao.BankTransactionDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 import org.cleverbank.operation.AccountStatement;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 public class WriterMenuAction {
 
@@ -16,7 +16,7 @@ public class WriterMenuAction {
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(bankTransactionDAO);
         try {
-            ArrayList<BankTransaction> bankTransactions =
+            List<BankTransaction> bankTransactions =
                     bankTransactionDAO.findEntityByDate(dateStartPeriod, dateEndPeriod, account);
             transactionDB.commit();
             return AccountStatement.generateStatement(account, bankTransactions, dateStartPeriod, dateEndPeriod);

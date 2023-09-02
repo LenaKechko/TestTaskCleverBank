@@ -1,5 +1,6 @@
 package org.cleverbank.dao;
 
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.*;
 
 import java.sql.*;
@@ -48,7 +49,8 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             while (rs.next()) {
                 int numberCheck = rs.getInt("number_check");
                 Date transactionDate = rs.getDate("transaction_date");
-                TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
+                TypeTransaction typeTransaction =
+                        typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
                 Double money = rs.getDouble("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
@@ -78,7 +80,8 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Date transactionDate = rs.getDate("transaction_date");
-                TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
+                TypeTransaction typeTransaction =
+                        typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
                 Double money = rs.getDouble("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
@@ -95,8 +98,8 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return bankTransaction;
     }
 
-    public ArrayList<BankTransaction> findEntityByDate(LocalDate startDate, LocalDate finishDate, Account account) {
-        ArrayList<BankTransaction> bankTransactions = new ArrayList<>();
+    public List<BankTransaction> findEntityByDate(LocalDate startDate, LocalDate finishDate, Account account) {
+        List<BankTransaction> bankTransactions = new ArrayList<>();
         try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN)) {
             transactionDB.initTransaction(typeTransactionDAO, accountDao);

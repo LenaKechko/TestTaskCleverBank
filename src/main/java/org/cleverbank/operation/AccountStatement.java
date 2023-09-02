@@ -7,12 +7,12 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AccountStatement {
-    public static String generateStatement(Account account, ArrayList<BankTransaction> bankTransactions,
-                                         LocalDate startDate, LocalDate finishDate) {
+    public static String generateStatement(Account account, List<BankTransaction> bankTransactions,
+                                           LocalDate startDate, LocalDate finishDate) {
         Date dateNow = Date.from(Instant.now());
         SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat formatTime = new SimpleDateFormat("HH.mm");

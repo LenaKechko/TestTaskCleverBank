@@ -2,7 +2,7 @@ package org.cleverbank.menu;
 
 import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.menu.action.AccountMenuAction;
 
 import java.util.ArrayList;

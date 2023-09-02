@@ -15,6 +15,7 @@ public class WriterMenu extends AbstractMenu {
             "1. Вывести в PDF\n" +
                     "2. Вывести в TXT\n" +
                     "3. Вернуться в предыдущее меню";
+    private static final String STATEMENTS_STATEMENT = "statements\\statement";
 
     public static void start(Account account, LocalDate dateStartPeriod, LocalDate dateEndPeriod) {
         String accountStatement = WriterMenuAction.getStatement(account, dateStartPeriod, dateEndPeriod);
@@ -26,12 +27,12 @@ public class WriterMenu extends AbstractMenu {
                 case 1:
                     IWriter writerPDF = new WriterPDF();
                     writer = new Writer(writerPDF);
-                    writer.runWriter(accountStatement, "statement\\statement" + account.getNumberAccount());
+                    writer.runWriter(accountStatement, STATEMENTS_STATEMENT + account.getNumberAccount());
                     break;
                 case 2:
                     IWriter writerTXT = new WriterTXT();
                     writer = new Writer(writerTXT);
-                    writer.runWriter(accountStatement, "statement\\statement" + account.getNumberAccount());
+                    writer.runWriter(accountStatement, STATEMENTS_STATEMENT + account.getNumberAccount());
                     break;
                 case 3:
                     return;

@@ -5,7 +5,7 @@ import org.cleverbank.dao.BankDAO;
 import org.cleverbank.dao.TypeCurrencyDAO;
 import org.cleverbank.dao.UserDAO;
 import org.cleverbank.entities.Account;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.TypeCurrency;
 import org.cleverbank.entities.User;
 

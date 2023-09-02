@@ -1,14 +1,14 @@
 package org.cleverbank.operation;
 
 import org.cleverbank.dao.AccountDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 
 /**
  * Класс для пополнения средств на счет владельцем счета
  */
-public class ReplenishmentMoney extends Check implements IOperationWithAccount {
+public class ReplenishmentMoney implements IOperationWithAccount {
 
     public TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, double money) {
         Account account = (senderAccount != null) ? senderAccount : receiverAccount;
@@ -26,7 +26,7 @@ public class ReplenishmentMoney extends Check implements IOperationWithAccount {
 
     @Override
     public String generateCheck(BankTransaction bankTransaction) {
-        String bill = super.generateCheck(bankTransaction);
+        String bill = IOperationWithAccount.generateCheckHeader(bankTransaction);
 
         bill += String.format("| Банк получателя: %22s |\n", bankTransaction.getAccountOfSender().getBank().getName());
         bill += String.format("| Счет получателя: %22s |\n", bankTransaction.getAccountOfSender().getNumberAccount());

@@ -1,6 +1,6 @@
-package org.cleverbank.dao;
+package org.cleverbank.connection;
 
-import org.cleverbank.ConnectorDB;
+import org.cleverbank.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,11 +10,7 @@ public class TransactionDB {
 
     public void initTransaction(AbstractDAO dao, AbstractDAO... daos) {
         if (connection == null) {
-            try {
-                connection = ConnectorDB.getConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                connection = MySingletonConnection.INSTANCE.getConnectionDB();
         }
         try {
             connection.setAutoCommit(false);

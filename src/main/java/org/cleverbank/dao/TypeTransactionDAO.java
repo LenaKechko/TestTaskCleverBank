@@ -1,6 +1,7 @@
 package org.cleverbank.dao;
 
 import org.cleverbank.entities.TypeTransaction;
+import org.cleverbank.entities.TypeTransactionEnum;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
             while (rs.next()) {
                 int id = rs.getInt(1);
                 String name = rs.getString(2);
-                typeTransactions.add(new TypeTransaction(id, name));
+                typeTransactions.add(new TypeTransaction(id, TypeTransactionEnum.findByType(name)));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -38,7 +39,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
             if (rs.next()) {
                 String name = rs.getString(2);
 
-                typeTransaction = new TypeTransaction(id, name);
+                typeTransaction = new TypeTransaction(id, TypeTransactionEnum.findByType(name));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -46,11 +47,11 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
         return typeTransaction;
     }
 
-    public TypeTransaction findEntityByType(String type) {
+    public TypeTransaction findEntityByType(TypeTransactionEnum type) {
         TypeTransaction typeTransaction = null;
         try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_TYPE_TRANSACTION_TYPE)) {
-            statement.setString(1, type);
+            statement.setString(1, type.getType());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 int id = rs.getInt(1);

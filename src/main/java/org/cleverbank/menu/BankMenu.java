@@ -1,7 +1,7 @@
 package org.cleverbank.menu;
 
 import org.cleverbank.dao.BankDAO;
-import org.cleverbank.dao.TransactionDB;
+import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Bank;
 import org.cleverbank.menu.action.BankMenuAction;
 
