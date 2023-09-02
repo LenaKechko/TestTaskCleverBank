@@ -1,22 +1,14 @@
 package org.cleverbank.menu;
 
-import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.dao.BankTransactionDAO;
-import org.cleverbank.dao.TypeTransactionDAO;
 import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
-import org.cleverbank.operation.AccountStatementTXT;
-import org.cleverbank.operation.UserOperationWithAccount;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
 public class AccountStatementMenu extends AbstractMenu {
@@ -35,44 +27,36 @@ public class AccountStatementMenu extends AbstractMenu {
             Scanner scanner = new Scanner(System.in);
             BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
             ArrayList<BankTransaction> bankTransactions = null;
-            LocalDate dateNow = LocalDate.now();
+            LocalDate dateNow = LocalDate.now(), dateStartPeriod = null, dateEndPeriod = null;
             switch (sc.nextInt()) {
                 case 1:
-                    LocalDate dateStartOfMonth = dateNow.withDayOfMonth(1);
-                    LocalDate dateEndOfMonth = dateNow.withDayOfMonth(dateNow.lengthOfMonth());
-                    bankTransactions =
-                            bankTransactionDAO.findEntityByDate(dateStartOfMonth, dateEndOfMonth, account);
-                    AccountStatementTXT.generateStatement(account, bankTransactions, dateStartOfMonth, dateEndOfMonth);
+                    dateStartPeriod = dateNow.withDayOfMonth(1);
+                    dateEndPeriod = dateNow.withDayOfMonth(dateNow.lengthOfMonth());
+                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
                     break;
                 case 2:
-                    LocalDate dateStartOfYear = dateNow.withDayOfYear(1);
-                    LocalDate dateEndOfYear = dateNow.withDayOfYear(dateNow.lengthOfYear());
-                    bankTransactions =
-                            bankTransactionDAO.findEntityByDate(dateStartOfYear, dateEndOfYear, account);
-                    AccountStatementTXT.generateStatement(account, bankTransactions, dateStartOfYear, dateEndOfYear);
+                    dateStartPeriod = dateNow.withDayOfYear(1);
+                    dateEndPeriod = dateNow.withDayOfYear(dateNow.lengthOfYear());
+                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
                     break;
                 case 3:
-                    LocalDate dateStart =
+                    dateStartPeriod =
                             Instant.ofEpochMilli(account.getOpeningDate().getTime())
                                     .atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate dateEnd = dateNow;
-                    bankTransactions =
-                            bankTransactionDAO.findEntityByDate(dateStart, dateEnd, account);
-                    AccountStatementTXT
-                            .generateStatement(account, bankTransactions, dateStart, dateEnd);
+                    dateEndPeriod = dateNow;
+                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
                     break;
                 case 4:
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     System.out.println("Введите начальную дату (дд-мм-гггг):");
-                    LocalDate dateStartPeriod = LocalDate.parse(scanner.nextLine(), formatter);
+                    dateStartPeriod = LocalDate.parse(scanner.nextLine(), formatter);
                     System.out.println("Введите конечную дату (дд-мм-гггг):");
-                    LocalDate dateEndPeriod = LocalDate.parse(scanner.nextLine(), formatter);
-                    bankTransactions =
-                            bankTransactionDAO.findEntityByDate(dateStartPeriod, dateEndPeriod, account);
-                    AccountStatementTXT.generateStatement(account, bankTransactions, dateStartPeriod, dateEndPeriod);
+                    dateEndPeriod = LocalDate.parse(scanner.nextLine(), formatter);
+                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
                     break;
                 case 5:
                     return;
+
             }
         }
     }
