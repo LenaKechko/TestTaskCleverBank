@@ -8,10 +8,34 @@ import org.cleverbank.entities.Account;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
+/**
+ * Класс для формирования выписки о
+ * потраченных и полученных денежных средствах
+ * в определенный промежуток времени
+ *
+ * @author Кечко Елена
+ */
 public class MoneyStatement implements IStatement {
+
+    /**
+     * Поле для подтраченных денежных средств
+     */
     private BigDecimal leavingMoney;
+    /**
+     * Поле для полученных денежных средств
+     */
     private BigDecimal comingMoney;
 
+    /**
+     * Метод для формирования выписки с предварительным
+     * расчетом потраченных и полученных денежных средствах
+     *
+     * @param account    объект счета
+     * @param startDate  начало временного промежутка
+     * @param finishDate окончание временного промежутка
+     * @return текст выписки
+     */
     @Override
     public StringBuilder generateStatement(Account account, LocalDate startDate, LocalDate finishDate) {
         StringBuilder bill = IStatement.generateStatementHeader(account, startDate, finishDate);
@@ -21,7 +45,7 @@ public class MoneyStatement implements IStatement {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(bankTransactionDAO);
-        
+
         CallTransaction.doSelect(() -> {
             comingMoney = bankTransactionDAO.findTotalSumComingMoney(account, startDate, finishDate);
             leavingMoney = bankTransactionDAO.findTotalSumLeavingMoney(account, startDate, finishDate);

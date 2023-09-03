@@ -9,8 +9,16 @@ import org.cleverbank.menu.action.AccountMenuAction;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Класс отвечающий за меню работы с операциями над счетом
+ *
+ * @author Кечко Елена
+ */
 public class AccountMenu extends AbstractMenu {
 
+    /**
+     * Константа вида меню операций над счетами
+     */
     private final static String ACCOUNT_MENU =
             """
                     1. Просмотреть информацию по всем счетам
@@ -19,6 +27,11 @@ public class AccountMenu extends AbstractMenu {
                     4. Корректировать данные счета (по фио владельца)
                     5. Вернуться в главное меню""";
 
+    /**
+     * Метод позволяющий выбрать раздел операций над счетами
+     * Здесь представлены основные crud-операции: создание, удаление,
+     * изменение и вывод на экран существующие счета в банках
+     */
     public static void start() {
         while (true) {
             printMenu(ACCOUNT_MENU);

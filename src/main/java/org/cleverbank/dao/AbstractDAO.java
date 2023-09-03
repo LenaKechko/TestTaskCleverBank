@@ -5,32 +5,73 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public abstract class AbstractDAO<K extends Number, T> {
+/**
+ * Абстрактный класс. Предоставляет список страндартных методов
+ * для crud-операций. Параметризированный: на первом месте тип ключа,
+ * на втором тип сущности. Содержит protected экзепмляр Connection
+ * для работы со Statement и PreperadStatement
+ *
+ * @author Кечко Елена
+ */
 
+public abstract class AbstractDAO<K extends Number, T> {
+    /**
+     * Поле connection
+     */
     protected Connection connection;
 
+    /**
+     * Метод для просмотра всех данных из БД
+     *
+     * @return List объектов сущности
+     */
     public abstract List<T> findAll();
 
+    /**
+     * Метод для нахождение сущности из БД по id
+     *
+     * @param id объекта
+     * @return объект сущности
+     */
     public abstract T findEntityById(K id);
 
+    /**
+     * Метод для удаления сущности из БД по id
+     *
+     * @param id объекта
+     * @return true/false - успешное выполнение операции или нет
+     */
     public abstract boolean delete(K id);
 
+    /**
+     * Метод для удаления сущности из БД по сущности
+     *
+     * @param entity
+     * @return true/false - успешное выполнение операции или нет
+     */
     public abstract boolean delete(T entity);
 
+    /**
+     * Метод для занесения сущности в БД
+     *
+     * @param entity
+     * @return true/false - успешное выполнение операции или нет
+     */
     public abstract boolean create(T entity);
 
+    /**
+     * Метод для изменения сущности в БД
+     *
+     * @param entity
+     * @return true/false - успешное выполнение операции или нет
+     */
     public abstract boolean update(T entity);
 
-//    public void close(Statement statement) {
-//        try {
-//            if (statement != null) {
-//                statement.close();
-//            }
-//        } catch (SQLException e){
-//            e.printStackTrace();
-//        }
-//    }
-
+    /**
+     * Присвоение значения параметру connection
+     *
+     * @param connection
+     */
     public void setConnection(Connection connection) {
         this.connection = connection;
     }

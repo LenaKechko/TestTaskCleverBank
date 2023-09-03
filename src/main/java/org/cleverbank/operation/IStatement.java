@@ -8,11 +8,35 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+/**
+ * Интерфейс для формирования выписок различных видов
+ *
+ * @author Кечко Елена
+ */
+
 public interface IStatement {
+    /**
+     * Поле для формата даты
+     */
     SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
+    /**
+     * Поле для формата времени
+     */
     SimpleDateFormat formatTime = new SimpleDateFormat("HH.mm");
+    /**
+     * Поле для формата даты
+     */
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+    /**
+     * Метод для формаирования заголовка выписки
+     * на основе данных об аккаунте и временного промежутка
+     *
+     * @param account    объект счета
+     * @param startDate  начало временного промежутка
+     * @param finishDate окончание временного промежутка
+     * @return текст шапки выписки
+     */
     static StringBuilder generateStatementHeader(Account account,
                                                  LocalDate startDate, LocalDate finishDate) {
         Date dateNow = Date.from(Instant.now());
@@ -37,5 +61,13 @@ public interface IStatement {
         return bill;
     }
 
+    /**
+     * Метод для формирования выписки конкретного вида
+     *
+     * @param account    объект счета
+     * @param startDate  начало временного промежутка
+     * @param finishDate окончание временного промежутка
+     * @return текст шапки выписки
+     */
     StringBuilder generateStatement(Account account, LocalDate startDate, LocalDate finishDate);
 }

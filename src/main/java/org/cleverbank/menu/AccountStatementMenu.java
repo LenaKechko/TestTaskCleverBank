@@ -9,7 +9,17 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+/**
+ * Класс, отвечающий за меню работы с выписками по счету:
+ * выбор временного промежутка для данных выписок
+ *
+ * @author Кечко Елена
+ */
+
 public class AccountStatementMenu extends AbstractMenu {
+    /**
+     * Константа вида меню выбора временного промежутка для выписки
+     */
     private final static String ACCOUNT_STATEMENT_MENU =
             """
                     1. Выписка за текущий месяц
@@ -18,6 +28,13 @@ public class AccountStatementMenu extends AbstractMenu {
                     4. Выписка за указанный период
                     5. Вернуться к другим операциям""";
 
+    /**
+     * Метод позволяющий выбрать временной промежуток для выписки
+     * на основе данных счета и вида выписки продолжить действие
+     *
+     * @param account объект пользователя
+     * @param statement вид выписка определенный интерфейсом IStatement
+     */
     public static void start(Account account, IStatement statement) {
         while (true) {
             printMenu(ACCOUNT_STATEMENT_MENU);

@@ -10,8 +10,24 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Класс для формирования развернутой выписки
+ * по всем проведенным операциям
+ * в определенный промежуток времени
+ *
+ * @author Кечко Елена
+ */
 public class AccountStatement implements IStatement {
 
+    /**
+     * Метод для формирования выписки
+     * за конкретный промежуток времени
+     *
+     * @param account    объект счета
+     * @param startDate  начало временного промежутка
+     * @param finishDate окончание временного промежутка
+     * @return текст выписки
+     */
     @Override
     public StringBuilder generateStatement(Account account,
                                            LocalDate startDate, LocalDate finishDate) {
@@ -19,7 +35,7 @@ public class AccountStatement implements IStatement {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(bankTransactionDAO);
-        final List <BankTransaction> bankTransactions=
+        final List<BankTransaction> bankTransactions =
                 CallTransaction.<List<BankTransaction>>doSelect(() ->
                         bankTransactionDAO.findEntityByDate(startDate, finishDate, account), transactionDB);
 

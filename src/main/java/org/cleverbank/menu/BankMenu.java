@@ -9,7 +9,15 @@ import org.cleverbank.menu.action.BankMenuAction;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Класс отвечающий за меню работы с операциями над списком банков
+ *
+ * @author Кечко Елена
+ */
 public class BankMenu extends AbstractMenu {
+    /**
+     * Константа вида меню операций над банками
+     */
     private final static String BANK_MENU =
             """
                     1. Вывести информацию о банках
@@ -18,6 +26,11 @@ public class BankMenu extends AbstractMenu {
                     4. Изменить данные банка (по наименованию)
                     5. Вернуться в главное меню""";
 
+    /**
+     * Метод позволяющий выбрать раздел операций над банками
+     * Здесь представлены основные crud-операции: создание, удаление,
+     * изменение и вывод на экран существующие банки
+     */
     public static void start() {
         TransactionDB transactionDB = new TransactionDB();
         while (true) {

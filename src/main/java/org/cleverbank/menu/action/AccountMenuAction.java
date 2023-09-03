@@ -15,9 +15,22 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Класс с операциями необходимыми в меню операций над счетами
+ *
+ * @author Кечко Елена
+ */
 public class AccountMenuAction {
+    /**
+     * Поле, ппредоставляющее возможность считывать данные с консоли
+     */
     private final static Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Метод для ввода данных необходимых для создания счета
+     *
+     * @return объект пользователь Account
+     */
     public static Account create() {
         Account account = new Account();
         TypeCurrencyDAO typeCurrencyDAO = new TypeCurrencyDAO();
@@ -85,6 +98,11 @@ public class AccountMenuAction {
         return account;
     }
 
+    /**
+     * Метод для ввода фио пользователя и получения по нему счета
+     *
+     * @return объект пользователя Account
+     */
     public static Account enterUserFullName() {
         AccountDAO accountDAO = new AccountDAO();
         TransactionDB transactionDB = new TransactionDB();
@@ -94,6 +112,12 @@ public class AccountMenuAction {
         return account;
     }
 
+    /**
+     * Метод для ввода данных на изменение объекта Account
+     *
+     * @param account объект для изменения
+     * @return объект пользователя Account
+     */
     public static Account update(Account account) {
         TypeCurrencyDAO typeCurrencyDAO = new TypeCurrencyDAO();
         TransactionDB transactionDB = new TransactionDB();

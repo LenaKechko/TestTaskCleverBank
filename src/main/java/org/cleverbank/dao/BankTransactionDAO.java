@@ -9,49 +9,98 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для работы с сущностью BankTransaction и таблицей БД transactions
+ *
+ * @author Кечко Елена
+ */
 public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
+    /**
+     * Запрос на вывод всех данных из таблицы
+     */
     public static final String SQL_SELECT_ALL_BANK_TRANSACTIONS = "SELECT * FROM transactions";
-
+    /**
+     * Запрос на вывод данных по известному номеру чека
+     */
     public static final String SQL_SELECT_BANK_TRANSACTIONS_NUMBER_CHECK =
             "SELECT * FROM transactions WHERE number_check = ?";
 
+    /**
+     * Запрос на вывод номера чека по известным данным операции
+     */
     public static final String SQL_SELECT_NUMBER_CHECK_BANK_TRANSACTIONS =
             "SELECT number_check FROM transactions " +
                     "WHERE transaction_date = ? and id_type_of_transaction = ? and money = ? " +
                     "and (id_sender = ? or id_sender is null) and (id_receiver = ? or id_receiver is null)";
 
+    /**
+     * Запрос на вывод операций, совершенных пользователем в определенный промежуток времени
+     */
     public static final String SQL_SELECT_BANK_TRANSACTIONS_DATE_BETWEEN =
             "SELECT * FROM transactions " +
                     "WHERE (id_sender = ? or id_receiver = ?) and (transaction_date between ? and ?)" +
                     "ORDER BY transaction_date";
 
+    /**
+     * Запрос на подсчет пришедших средств пользователю в определенный промежуток времени
+     */
     public static final String SQL_SELECT_COMING_MONEY =
             "SELECT sum(money) FROM transactions " +
                     "WHERE ((id_sender = ? and id_receiver is null) " +
                     "or (id_receiver = ? and id_sender is not null)) " +
                     "and (transaction_date between ? and ?)";
 
+    /**
+     * Запрос на подсчет ушедших средств пользователя в определенный промежуток времени
+     */
     public static final String SQL_SELECT_LEAVING_MONEY =
             "SELECT -sum(money) FROM transactions " +
                     "WHERE ((id_receiver = ? and id_sender is null) " +
                     "or (id_sender = ? and id_receiver is not null))" +
                     "and (transaction_date between ? and ?)";
+    /**
+     * Запрос на запись данных в таблицу БД
+     */
     public static final String SQL_INSERT_BANK_TRANSACTION =
             "INSERT INTO transactions(transaction_date, id_type_of_transaction, money, id_sender, id_receiver) " +
                     "VALUES (?, ?, ?, ?, ?)";
+    /**
+     * Запрос на удаление данных из таблицы БД по известному номеру чека
+     */
+    public static final String SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK =
+            "DELETE FROM transactions WHERE number_check = ?";
 
-    public static final String SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK = "DELETE FROM transactions WHERE number_check = ?";
-
-    public static final String SQL_DELETE_BANK_TRANSACTION_DATE = "DELETE FROM transactions WHERE transaction_date = ?";
-
+    /**
+     * Запрос на удаление данных из таблицы БД по дате транзакции
+     */
+    public static final String SQL_DELETE_BANK_TRANSACTION_DATE =
+            "DELETE FROM transactions WHERE transaction_date = ?";
+    /**
+     * Запрос на изменение данных из таблицы БД по известному номеру чека
+     */
     public static final String SQL_UPDATE_BANK_TRANSACTION =
             "UPDATE transactions SET transaction_date = ?, id_type_of_transaction = ?, money = ?, id_sender = ?, id_receiver = ? " +
                     "WHERE number_check = ?";
 
+    /**
+     * Поле для организации связи с таблицей тип транзакции
+     */
     TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
+    /**
+     * Поле для организации связи с таблицей счета
+     */
     AccountDAO accountDao = new AccountDAO();
+    /**
+     * Поле для работы с транзакцией
+     */
     TransactionDB transactionDB = new TransactionDB();
 
+    /**
+     * Метод для просмотра всех данных из таблицы transactions
+     *
+     * @return List объектов Account
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public List<BankTransaction> findAll() {
         List<BankTransaction> bankTransactions = new ArrayList<>();
@@ -81,7 +130,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return bankTransactions;
     }
 
-
+    /**
+     * Метод для нахождение сущности из БД по номеру чека
+     *
+     * @param numberCheck объекта
+     * @return объект BankTransaction
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public BankTransaction findEntityById(Integer numberCheck) {
         BankTransaction bankTransaction = null;
@@ -110,6 +165,15 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return bankTransaction;
     }
 
+    /**
+     * Метод для нахождение транзакци по id пользователя
+     * в определенный промежуток времени
+     *
+     * @param startDate начало временного промежутка
+     * @param finishDate конец временного промежутка
+     * @return List<BankTransaction> список транзакций
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     public List<BankTransaction> findEntityByDate(LocalDate startDate, LocalDate finishDate, Account account) {
         List<BankTransaction> bankTransactions = new ArrayList<>();
         try (PreparedStatement statement =
@@ -142,7 +206,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         }
         return bankTransactions;
     }
-
+    /**
+     * Метод для номера чека по данным транзакции
+     *
+     * @param bankTransaction объект
+     * @return numberCheck номер чека транзакции
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     public Integer findNumberCheckByBankTransaction(BankTransaction bankTransaction) {
         int id = 0;
         try (PreparedStatement statement =
@@ -170,7 +240,16 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         }
         return id;
     }
-
+    /**
+     * Метод для нахождение полученных денежных средств
+     * по id пользователя в определенный промежуток времени
+     *
+     * @param account объект пользователя
+     * @param startDate начало временного промежутка
+     * @param finishDate конец временного промежутка
+     * @return сумма денежных средств
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     public BigDecimal findTotalSumComingMoney(Account account, LocalDate startDate, LocalDate finishDate) {
         BigDecimal comingMoney = BigDecimal.valueOf(0.0);
         try (PreparedStatement statement =
@@ -192,6 +271,16 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return comingMoney;
     }
 
+    /**
+     * Метод для нахождение потраченных денежных средств
+     * по id пользователя в определенный промежуток времени
+     *
+     * @param account объект пользователя
+     * @param startDate начало временного промежутка
+     * @param finishDate конец временного промежутка
+     * @return сумма потраченных денежных средств
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     public BigDecimal findTotalSumLeavingMoney(Account account, LocalDate startDate, LocalDate finishDate) {
         BigDecimal leavingMoney = BigDecimal.valueOf(0.0);
         try (PreparedStatement statement =
@@ -213,6 +302,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return leavingMoney;
     }
 
+    /**
+     * Метод для удаления сущности из БД по номеру чека
+     *
+     * @param numberCheck номер чека
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean delete(Integer numberCheck) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_NUMBER_CHECK)) {
@@ -225,10 +321,18 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return false;
     }
 
+    /**
+     * Метод для удаления сущности из БД по данныи транзакции
+     *
+     * @param bankTransaction объект транзакции
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean delete(BankTransaction bankTransaction) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_BANK_TRANSACTION_DATE)) {
-            preparedStatement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
+            preparedStatement.setTimestamp(1,
+                    new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -237,6 +341,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return false;
     }
 
+    /**
+     * Метод для занесения сущности в БД
+     *
+     * @param bankTransaction объект типа BankTransaction
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean create(BankTransaction bankTransaction) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_BANK_TRANSACTION)) {
@@ -262,6 +373,13 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         return false;
     }
 
+    /**
+     * Метод для изменения сущности в БД
+     *
+     * @param bankTransaction объект типа BankTransaction
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean update(BankTransaction bankTransaction) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_TRANSACTION)) {
