@@ -25,6 +25,17 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                     "WHERE (id_sender = ? or id_receiver = ?) and (transaction_date between ? and ?)" +
                     "ORDER BY transaction_date";
 
+    public static final String SQL_SELECT_COMING_MONEY =
+            "SELECT sum(money) FROM transactions " +
+                    "WHERE ((id_sender = ? and id_receiver is null) " +
+                    "or (id_receiver = ? and id_sender is not null)) " +
+                    "and (transaction_date between ? and ?)";
+
+    public static final String SQL_SELECT_LEAVING_MONEY =
+            "SELECT -sum(money) FROM transactions " +
+                    "WHERE ((id_receiver = ? and id_sender is null) " +
+                    "or (id_sender = ? and id_receiver is not null))" +
+                    "and (transaction_date between ? and ?)";
     public static final String SQL_INSERT_BANK_TRANSACTION =
             "INSERT INTO transactions(transaction_date, id_type_of_transaction, money, id_sender, id_receiver) " +
                     "VALUES (?, ?, ?, ?, ?)";
@@ -158,6 +169,48 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             System.out.println(e.getMessage());
         }
         return id;
+    }
+
+    public BigDecimal findTotalSumComingMoney(Account account, LocalDate startDate, LocalDate finishDate) {
+        BigDecimal comingMoney = BigDecimal.valueOf(0.0);
+        try (PreparedStatement statement =
+                     connection.prepareStatement(SQL_SELECT_COMING_MONEY)) {
+            statement.setInt(1, account.getId());
+            statement.setInt(2, account.getId());
+            statement.setTimestamp(3,
+                    Timestamp.valueOf(startDate.atStartOfDay()));
+            statement.setTimestamp(4,
+                    Timestamp.valueOf(finishDate.plusDays(1).atStartOfDay()));
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                comingMoney = rs.getBigDecimal(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return comingMoney;
+    }
+
+    public BigDecimal findTotalSumLeavingMoney(Account account, LocalDate startDate, LocalDate finishDate) {
+        BigDecimal leavingMoney = BigDecimal.valueOf(0.0);
+        try (PreparedStatement statement =
+                     connection.prepareStatement(SQL_SELECT_LEAVING_MONEY)) {
+            statement.setInt(1, account.getId());
+            statement.setInt(2, account.getId());
+            statement.setTimestamp(3,
+                    Timestamp.valueOf(startDate.atStartOfDay()));
+            statement.setTimestamp(4,
+                    Timestamp.valueOf(finishDate.plusDays(1).atStartOfDay()));
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                leavingMoney = rs.getBigDecimal(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return leavingMoney;
     }
 
     @Override

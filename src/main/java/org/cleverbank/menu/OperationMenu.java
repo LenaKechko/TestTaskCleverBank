@@ -74,13 +74,14 @@ public class OperationMenu extends AbstractMenu {
                     while (true) {
                         System.out.println("Введите номер счета:");
                         String numberAccount = scanner.nextLine();
+                        transactionDB.initTransaction(accountDAO);
                         Account account = CallTransaction.<Account>doSelect(() ->
                                 accountDAO.findEntityByNumberAccount(numberAccount), transactionDB);
                         if (account == null) {
                             System.out.println("Не верно введен счет!");
                             continue;
                         }
-                        AccountStatementMenu.start(account);
+                        StatementMenu.start(account);
                         break;
                     }
 

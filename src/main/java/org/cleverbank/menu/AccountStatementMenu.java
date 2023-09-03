@@ -1,6 +1,7 @@
 package org.cleverbank.menu;
 
 import org.cleverbank.entities.Account;
+import org.cleverbank.operation.IStatement;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -17,8 +18,7 @@ public class AccountStatementMenu extends AbstractMenu {
                     4. Выписка за указанный период
                     5. Вернуться к другим операциям""";
 
-
-    public static void start(Account account) {
+    public static void start(Account account, IStatement statement) {
         while (true) {
             printMenu(ACCOUNT_STATEMENT_MENU);
             Scanner sc = new Scanner(System.in);
@@ -28,19 +28,19 @@ public class AccountStatementMenu extends AbstractMenu {
                 case 1 -> {
                     dateStartPeriod = dateNow.withDayOfMonth(1);
                     dateEndPeriod = dateNow.withDayOfMonth(dateNow.lengthOfMonth());
-                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
+                    WriterMenu.start(statement, account, dateStartPeriod, dateEndPeriod);
                 }
                 case 2 -> {
                     dateStartPeriod = dateNow.withDayOfYear(1);
                     dateEndPeriod = dateNow.withDayOfYear(dateNow.lengthOfYear());
-                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
+                    WriterMenu.start(statement, account, dateStartPeriod, dateEndPeriod);
                 }
                 case 3 -> {
                     dateStartPeriod =
                             Instant.ofEpochMilli(account.getOpeningDate().getTime())
                                     .atZone(ZoneId.systemDefault()).toLocalDate();
                     dateEndPeriod = dateNow;
-                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
+                    WriterMenu.start(statement, account, dateStartPeriod, dateEndPeriod);
                 }
                 case 4 -> {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -48,7 +48,7 @@ public class AccountStatementMenu extends AbstractMenu {
                     dateStartPeriod = LocalDate.parse(scanner.nextLine(), formatter);
                     System.out.println("Введите конечную дату (дд-мм-гггг):");
                     dateEndPeriod = LocalDate.parse(scanner.nextLine(), formatter);
-                    WriterMenu.start(account, dateStartPeriod, dateEndPeriod);
+                    WriterMenu.start(statement, account, dateStartPeriod, dateEndPeriod);
                 }
                 case 5 -> {
                     return;
