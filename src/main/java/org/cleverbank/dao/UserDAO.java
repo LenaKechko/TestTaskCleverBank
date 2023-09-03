@@ -11,12 +11,12 @@ public class UserDAO extends AbstractDAO<Integer, User> {
     public static final String SQL_SELECT_ALL_USERS = "SELECT * FROM users";
     public static final String SQL_SELECT_USER_ID = "SELECT * FROM users WHERE id = ?";
 
-    public static final String SQL_SELECT_USER_FULLNAME = "SELECT id FROM users WHERE lastname = ? and name = ? and middlename = ?";
+    public static final String SQL_SELECT_USER_FULL_NAME = "SELECT id FROM users WHERE lastname = ? and name = ? and middlename = ?";
     public static final String SQL_INSERT_USER =
             "INSERT INTO users(lastname, name, middlename, address, phone_number) VALUES (?, ?, ?, ?, ?)";
 
     public static final String SQL_DELETE_USER_ID = "DELETE FROM users WHERE id = ?";
-    public static final String SQL_DELETE_USER_FULLNAME = "DELETE FROM users WHERE lastname = ? and name = ? and middlename = ?";
+    public static final String SQL_DELETE_USER_FULL_NAME = "DELETE FROM users WHERE lastname = ? and name = ? and middlename = ?";
 
     public static final String SQL_UPDATE_USER =
             "UPDATE users SET lastname = ?, name = ?, middlename = ?, address = ?, phone_number = ? WHERE id = ?";
@@ -66,7 +66,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
     public Integer findEntityByFullName(User user) {
         int id = 0;
         try (PreparedStatement statement =
-                     connection.prepareStatement(SQL_SELECT_USER_FULLNAME)) {
+                     connection.prepareStatement(SQL_SELECT_USER_FULL_NAME)) {
             statement.setString(1, user.getLastName());
             statement.setString(2, user.getName());
             statement.setString(3, user.getMiddleName());
@@ -94,7 +94,7 @@ public class UserDAO extends AbstractDAO<Integer, User> {
 
     @Override
     public boolean delete(User user) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_FULLNAME)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_FULL_NAME)) {
             preparedStatement.setString(1, user.getLastName());
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getMiddleName());

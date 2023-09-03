@@ -41,10 +41,11 @@ public class AccountMenuAction {
                     2 - Создать нового пользователя""");
             int temp = scanner.nextInt();
             while (true) {
-                User user = null;
+                User user;
                 UserDAO userDAO = new UserDAO();
                 TransactionDB transactionDBUser = new TransactionDB();
                 transactionDBUser.initTransaction(userDAO);
+                transactionDB.initTransaction(userDAO);
                 int id;
                 if (temp == 1) {
                     id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
@@ -71,8 +72,8 @@ public class AccountMenuAction {
             System.out.println("Дата открытия счета:");
             account.setOpeningDate(Date.from(Instant.now()));
             System.out.println(account.getOpeningDate());
-            System.out.println("Введите сумму:");
-            account.setRemainder(scanner.nextDouble());
+            System.out.println("Введите сумму (формат XX,XX):");
+            account.setRemainder(scanner.nextBigDecimal());
             System.out.println("Выберите тип валюты на счете (укажите число):");
             List<TypeCurrency> typeCurrencies = typeCurrencyDAO.findAll();
             for (TypeCurrency type : typeCurrencies) {

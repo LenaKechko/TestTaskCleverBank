@@ -6,7 +6,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class User {
     private int id;
     private String lastName;
@@ -20,5 +19,15 @@ public class User {
         this.lastName = lastName;
         this.name = name;
         this.middleName = middleName;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("ФИО: " + lastName + " " + name + " " + middleName +
+                "\nАдрес: " + address +
+                "\nНомер телефона: " + phoneNumber +
+                "\n------------------------------------");
+        return result.toString();
     }
 }

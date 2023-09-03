@@ -11,7 +11,7 @@ import java.io.IOException;
 public class WriterPDF implements IWriter {
 
     @Override
-    public void createFile(String text, String fileName) {
+    public void createFile(StringBuilder text, String fileName) {
 
         try {
             BaseFont baseFont = BaseFont.createFont(
@@ -24,7 +24,7 @@ public class WriterPDF implements IWriter {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(fileName + ".pdf"));
             document.open();
-            Paragraph paragraph = new Paragraph(text, font);
+            Paragraph paragraph = new Paragraph(text.toString(), font);
             document.add(paragraph);
             document.close();
         } catch (DocumentException | FileNotFoundException e) {

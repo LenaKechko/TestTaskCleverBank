@@ -7,9 +7,9 @@ import java.io.IOException;
 public class WriterTXT implements IWriter {
 
     @Override
-    public void createFile(String text, String fileName) {
+    public void createFile(StringBuilder text, String fileName) {
         try (FileWriter output = new FileWriter(fileName + ".txt", false)) {
-            output.write(text);
+            output.write(text.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

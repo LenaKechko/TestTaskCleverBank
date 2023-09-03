@@ -12,7 +12,7 @@ import java.util.List;
 
 public class WriterMenuAction {
 
-    public static String getStatement(Account account, LocalDate dateStartPeriod, LocalDate dateEndPeriod) {
+    public static StringBuilder getStatement(Account account, LocalDate dateStartPeriod, LocalDate dateEndPeriod) {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(bankTransactionDAO);

@@ -5,6 +5,7 @@ import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class CashBack {
@@ -17,7 +18,9 @@ public class CashBack {
             List<Account> accounts = accountDAO.findAll();
             accounts.stream()
                     .map(account -> {
-                        double v = account.getRemainder() * (1 + percent / 100.0);
+
+                        BigDecimal v = account.getRemainder().multiply(
+                                BigDecimal.valueOf((1 + percent / 100.0)));
                         account.setRemainder(v);
                         return account;
                     })

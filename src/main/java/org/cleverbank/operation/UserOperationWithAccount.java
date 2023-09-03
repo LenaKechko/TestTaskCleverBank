@@ -7,6 +7,7 @@ import org.cleverbank.entities.Account;
 import org.cleverbank.entities.BankTransaction;
 import org.cleverbank.entities.TypeTransaction;
 
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserOperationWithAccount {
@@ -14,7 +15,8 @@ public class UserOperationWithAccount {
 
     private IOperationWithAccount operation;
 
-    public void runOperation(TypeTransaction typeTransaction, Account senderAccount, Account receiverAccount, double money) {
+    public void runOperation(TypeTransaction typeTransaction, Account senderAccount,
+                             Account receiverAccount, BigDecimal money) {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         AtomicReference<TransactionDB> transactionDB = new AtomicReference<>(new TransactionDB());
 
@@ -31,7 +33,7 @@ public class UserOperationWithAccount {
             bankTransactionDAO.create(operationCheck);
             int numberCheck = bankTransactionDAO.findNumberCheckByBankTransaction(operationCheck);
             operationCheck.setNumberCheck(numberCheck);
-            String bill = operation.generateCheck(operationCheck);
+            StringBuilder bill = operation.generateCheck(operationCheck);
             operation.printCheck(bill, "check" + operationCheck.getNumberCheck());
         }, transactionDB.get());
     }
