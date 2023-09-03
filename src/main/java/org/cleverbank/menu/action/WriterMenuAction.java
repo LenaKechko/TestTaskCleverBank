@@ -1,5 +1,6 @@
 package org.cleverbank.menu.action;
 
+import org.cleverbank.connection.CallTransaction;
 import org.cleverbank.dao.BankTransactionDAO;
 import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.Account;
@@ -15,19 +16,11 @@ public class WriterMenuAction {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(bankTransactionDAO);
-        try {
-            List<BankTransaction> bankTransactions =
-                    bankTransactionDAO.findEntityByDate(dateStartPeriod, dateEndPeriod, account);
-            transactionDB.commit();
-            return AccountStatement.generateStatement(account, bankTransactions, dateStartPeriod, dateEndPeriod);
-        } catch (Exception e) {
-            transactionDB.rollback();
-            e.printStackTrace();
-        } finally {
-            transactionDB.endTransaction();
-        }
-        return "";
+        final List <BankTransaction> bankTransactions=
+        CallTransaction.<List<BankTransaction>>doSelect(() ->
+                bankTransactionDAO.findEntityByDate(dateStartPeriod, dateEndPeriod, account), transactionDB);
 
+        return AccountStatement.generateStatement(account, bankTransactions, dateStartPeriod, dateEndPeriod);
     }
 
 }

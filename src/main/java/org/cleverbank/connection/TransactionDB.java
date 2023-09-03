@@ -29,7 +29,16 @@ public class TransactionDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+//        finally {
+//            try {
+//                connection.close();
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+
         connection = null;
+
     }
 
     public void commit() {

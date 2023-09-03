@@ -1,5 +1,6 @@
 package org.cleverbank.menu.action;
 
+import org.cleverbank.connection.CallTransaction;
 import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.dao.BankDAO;
 import org.cleverbank.dao.TypeCurrencyDAO;
@@ -11,18 +12,18 @@ import org.cleverbank.entities.User;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class AccountMenuAction {
-    private static Scanner scanner = new Scanner(System.in);
+    private final static Scanner scanner = new Scanner(System.in);
 
     public static Account create() {
         Account account = new Account();
         TypeCurrencyDAO typeCurrencyDAO = new TypeCurrencyDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(typeCurrencyDAO);
-        try {
+        CallTransaction.doSelect(() -> {
             while (true) {
                 BankDAO bankDAO = new BankDAO();
                 transactionDB.initTransaction(bankDAO);
@@ -34,22 +35,28 @@ public class AccountMenuAction {
                     System.out.println("Такого банка не существует, попробуйте еще раз");
                 }
             }
-            System.out.println("Выберите действия (укажите число):\n" +
-                    "1 - Счет открывается на существующего пользователя\n" +
-                    "2 - Создать нового пользователя");
+            System.out.println("""
+                    Выберите действия (укажите число):
+                    1 - Счет открывается на существующего пользователя
+                    2 - Создать нового пользователя""");
             int temp = scanner.nextInt();
             while (true) {
                 User user = null;
                 UserDAO userDAO = new UserDAO();
-                transactionDB.initTransaction(userDAO);
+                TransactionDB transactionDBUser = new TransactionDB();
+                transactionDBUser.initTransaction(userDAO);
                 int id;
                 if (temp == 1) {
                     id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
-
-                } else {
+                } else if (temp == 2){
                     user = UserMenuAction.create();
-                    userDAO.create(user);
+                    User finalUser = user;
+                    CallTransaction.<Boolean>doTransaction(() ->
+                                    userDAO.create(finalUser), transactionDBUser);
                     id = userDAO.findEntityByFullName(user);
+                } else {
+                    System.out.println("Введите 1 или 2");
+                    continue;
                 }
                 user = userDAO.findEntityById(id);
                 if (user != null) {
@@ -67,36 +74,22 @@ public class AccountMenuAction {
             System.out.println("Введите сумму:");
             account.setRemainder(scanner.nextDouble());
             System.out.println("Выберите тип валюты на счете (укажите число):");
-            ArrayList<TypeCurrency> typeCurrencies = (ArrayList<TypeCurrency>) typeCurrencyDAO.findAll();
+            List<TypeCurrency> typeCurrencies = typeCurrencyDAO.findAll();
             for (TypeCurrency type : typeCurrencies) {
                 System.out.printf("%d - %s\n", type.getId(), type.getName());
             }
             int id = scanner.nextInt();
             account.setCurrency(typeCurrencyDAO.findEntityById(id));
-            transactionDB.commit();
-        } catch (Exception e) {
-            transactionDB.rollback();
-            e.printStackTrace();
-        } finally {
-            transactionDB.endTransaction();
-        }
+        }, transactionDB);
         return account;
     }
 
     public static Account enterUserFullName() {
         AccountDAO accountDAO = new AccountDAO();
         TransactionDB transactionDB = new TransactionDB();
-        Account account = null;
-        try {
-            transactionDB.initTransaction(accountDAO);
-            account = accountDAO.findEntityByUser(UserMenuAction.enterFullName());
-            transactionDB.commit();
-        } catch (Exception e) {
-            transactionDB.rollback();
-            e.printStackTrace();
-        } finally {
-            transactionDB.endTransaction();
-        }
+        transactionDB.initTransaction(accountDAO);
+        Account account = CallTransaction.<Account>doSelect(() ->
+                accountDAO.findEntityByUser(UserMenuAction.enterFullName()), transactionDB);
         return account;
     }
 
@@ -104,27 +97,20 @@ public class AccountMenuAction {
         TypeCurrencyDAO typeCurrencyDAO = new TypeCurrencyDAO();
         TransactionDB transactionDB = new TransactionDB();
         transactionDB.initTransaction(typeCurrencyDAO);
-
+        scanner.nextLine();
         System.out.println("Изменить номер счета (ввести новый/N):");
         String numberAccount = scanner.nextLine();
         if (!numberAccount.equals("N"))
             account.setNumberAccount(numberAccount);
-        try {
-            System.out.println("Изменить тип валюты (выбрать новую/N):");
+        System.out.println("Изменить тип валюты (выбрать новую/N):");
+        CallTransaction.doSelect(() -> {
             for (TypeCurrency type : typeCurrencyDAO.findAll()) {
                 System.out.printf("%d - %s\n", type.getId(), type.getName());
             }
             String type = scanner.next();
             if (!type.equals("N"))
                 account.setCurrency(typeCurrencyDAO.findEntityById(Integer.valueOf(type)));
-            transactionDB.commit();
-
-        } catch (Exception e) {
-            transactionDB.rollback();
-            e.printStackTrace();
-        } finally {
-            transactionDB.endTransaction();
-        }
+        }, transactionDB);
         return account;
     }
 }

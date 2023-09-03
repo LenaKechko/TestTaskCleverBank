@@ -1,8 +1,10 @@
 package org.cleverbank.menu;
 
+import org.cleverbank.connection.CallTransaction;
 import org.cleverbank.dao.AccountDAO;
 import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.dao.TypeTransactionDAO;
+import org.cleverbank.entities.Account;
 import org.cleverbank.entities.TypeTransactionEnum;
 import org.cleverbank.operation.UserOperationWithAccount;
 
@@ -23,8 +25,6 @@ public class OperationMenu extends AbstractMenu {
         TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
         AccountDAO accountDAO = new AccountDAO();
         TransactionDB transactionDB = new TransactionDB();
-        String numberAccountReceiver, numberAccountSender;
-        Double money;
         while (true) {
             printMenu(OPERATION_MENU);
             transactionDB.initTransaction(typeTransactionDAO, accountDAO);
@@ -32,84 +32,58 @@ public class OperationMenu extends AbstractMenu {
             Scanner scanner = new Scanner(System.in);
             switch (sc.nextInt()) {
                 case 1 -> {
-                    try {
-                        System.out.println("Введите номер счета отправителя:");
-                        numberAccountSender = scanner.nextLine();
-                        System.out.println("Введите номер счета получателя:");
-                        numberAccountReceiver = scanner.nextLine();
-                        System.out.println("Введите сумму:");
-                        money = scanner.nextDouble();
-                        userAction.runOperation(
-                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.TRANSFER),
-                                accountDAO.findEntityByNumberAccount(numberAccountSender),
-                                accountDAO.findEntityByNumberAccount(numberAccountReceiver),
-                                money);
-                        transactionDB.commit();
-                    } catch (Exception e) {
-                        transactionDB.rollback();
-                        e.printStackTrace();
-                    } finally {
-                        transactionDB.endTransaction();
-                    }
+                    System.out.println("Введите номер счета отправителя:");
+                    final String numberAccountSender = scanner.nextLine();
+                    System.out.println("Введите номер счета получателя:");
+                    final String numberAccountReceiver = scanner.nextLine();
+                    System.out.println("Введите сумму:");
+                    final Double money = scanner.nextDouble();
+                    CallTransaction.doTransaction(() ->
+                            userAction.runOperation(
+                                    typeTransactionDAO.findEntityByType(TypeTransactionEnum.TRANSFER),
+                                    accountDAO.findEntityByNumberAccount(numberAccountSender),
+                                    accountDAO.findEntityByNumberAccount(numberAccountReceiver),
+                                    money), transactionDB);
                 }
                 case 2 -> {
-                    try {
-                        System.out.println("Введите номер счета, с которого снимаются средства:");
-                        numberAccountReceiver = scanner.nextLine();
-                        System.out.println("Введите сумму:");
-                        money = scanner.nextDouble();
-
-                        userAction.runOperation(
-                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.WITHDRAWAL),
-                                null,
-                                accountDAO.findEntityByNumberAccount(numberAccountReceiver),
-                                money);
-                        transactionDB.commit();
-                    } catch (Exception e) {
-                        transactionDB.rollback();
-                        e.printStackTrace();
-                    } finally {
-                        transactionDB.endTransaction();
-                    }
+                    System.out.println("Введите номер счета, с которого снимаются средства:");
+                    final String numberAccountReceiver = scanner.nextLine();
+                    System.out.println("Введите сумму:");
+                    final Double money = scanner.nextDouble();
+                    CallTransaction.doTransaction(() ->
+                            userAction.runOperation(
+                                    typeTransactionDAO.findEntityByType(TypeTransactionEnum.WITHDRAWAL),
+                                    null,
+                                    accountDAO.findEntityByNumberAccount(numberAccountReceiver),
+                                    money), transactionDB);
                 }
                 case 3 -> {
-                    try {
-                        System.out.println("Введите номер, пополняемого счета:");
-                        numberAccountSender = scanner.nextLine();
-                        System.out.println("Введите сумму:");
-                        money = scanner.nextDouble();
-
-                        userAction.runOperation(
-                                typeTransactionDAO.findEntityByType(TypeTransactionEnum.REPLENISHMENT),
-                                accountDAO.findEntityByNumberAccount(numberAccountSender),
-                                null, money);
-                        transactionDB.commit();
-                    } catch (Exception e) {
-                        transactionDB.rollback();
-                        e.printStackTrace();
-                    } finally {
-                        transactionDB.endTransaction();
-                    }
+                    System.out.println("Введите номер, пополняемого счета:");
+                    final String numberAccountSender = scanner.nextLine();
+                    System.out.println("Введите сумму:");
+                    final Double money = scanner.nextDouble();
+                    CallTransaction.doTransaction(() ->
+                            userAction.runOperation(
+                                    typeTransactionDAO.findEntityByType(TypeTransactionEnum.REPLENISHMENT),
+                                    accountDAO.findEntityByNumberAccount(numberAccountSender),
+                                    null, money), transactionDB);
                 }
                 case 4 -> {
-                    try {
-                        while (true) {
-                            System.out.println("Введите номер счета:");
-                            String numberAccount = scanner.nextLine();
-                            if (accountDAO.findEntityByNumberAccount(numberAccount) == null) {
-                                System.out.println("Не верно введен счет!");
-                                continue;
-                            }
-                            AccountStatementMenu.start(accountDAO.findEntityByNumberAccount(numberAccount));
-                            transactionDB.commit();
-                            break;
+                    while (true) {
+                        System.out.println("Введите номер счета:");
+                        String numberAccount = scanner.nextLine();
+                        Account account = CallTransaction.doTransaction(() ->
+                                accountDAO.findEntityByNumberAccount(numberAccount), transactionDB);
+                        if (account == null) {
+                            System.out.println("Не верно введен счет!");
+                            continue;
                         }
-                    } catch (Exception e) {
-                        transactionDB.rollback();
-                        e.printStackTrace();
-                    } finally {
-                        transactionDB.endTransaction();
+                        CallTransaction.doTransaction(() ->
+                                AccountStatementMenu.start(accountDAO.findEntityByNumberAccount(numberAccount)),
+                                transactionDB);
+                        break;
                     }
+
                 }
                 case 5 -> {
                     return;
