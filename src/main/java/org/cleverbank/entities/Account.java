@@ -2,20 +2,29 @@ package org.cleverbank.entities;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Account {
     private int id;
     private String numberAccount;
     private Date openingDate;
-    private Double remainder;
+    private BigDecimal remainder;
     private User user;
     private Bank bank;
     private TypeCurrency currency;
+
+    @Override
+    public String toString() {
+        return "Номер счета: " + numberAccount +
+                "\nДата открытия счета: " + openingDate +
+                "\n-------Клиент-------\n" + user.toString() +
+                "\n--------Банк--------\n" + bank.toString() +
+                "\nОстаток: " + remainder + " " + currency.getName() +
+                "\n----------------------------------------------------";
+    }
 }

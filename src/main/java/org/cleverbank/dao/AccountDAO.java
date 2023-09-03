@@ -3,6 +3,7 @@ package org.cleverbank.dao;
 import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.*;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
                 int id = rs.getInt("id");
                 String numberAccount = rs.getString("number_account");
                 Date openingDate = rs.getDate("opening_date");
-                Double remainder = rs.getDouble("remainder");
+                BigDecimal remainder = rs.getBigDecimal("remainder");
                 User user = userDAO.findEntityById(rs.getInt("id_user"));
                 Bank bank = bankDAO.findEntityById(rs.getInt("id_bank"));
                 TypeCurrency currency = typeCurrencyDAO.findEntityById(rs.getInt("id_currency"));
@@ -80,7 +81,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
             if (rs.next()) {
                 String numberAccount = rs.getString("number_account");
                 Date openingDate = rs.getDate("opening_date");
-                Double remainder = rs.getDouble("remainder");
+                BigDecimal remainder = rs.getBigDecimal("remainder");
                 User user = userDAO.findEntityById(rs.getInt("id_user"));
                 Bank bank = bankDAO.findEntityById(rs.getInt("id_bank"));
                 TypeCurrency currency = typeCurrencyDAO.findEntityById(rs.getInt("id_currency"));
@@ -106,7 +107,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
             if (rs.next()) {
                 int id = rs.getInt("id");
                 Date openingDate = rs.getDate("opening_date");
-                Double remainder = rs.getDouble("remainder");
+                BigDecimal remainder = rs.getBigDecimal("remainder");
                 User user = userDAO.findEntityById(rs.getInt("id_user"));
                 Bank bank = bankDAO.findEntityById(rs.getInt("id_bank"));
                 TypeCurrency currency = typeCurrencyDAO.findEntityById(rs.getInt("id_currency"));
@@ -135,7 +136,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
                 int id = rs.getInt("id");
                 String numberAccount = rs.getString("number_account");
                 Date openingDate = rs.getDate("opening_date");
-                Double remainder = rs.getDouble("remainder");
+                BigDecimal remainder = rs.getBigDecimal("remainder");
                 user = userDAO.findEntityById(rs.getInt("id_user"));
                 Bank bank = bankDAO.findEntityById(rs.getInt("id_bank"));
                 TypeCurrency currency = typeCurrencyDAO.findEntityById(rs.getInt("id_currency"));
@@ -162,7 +163,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
                 int id = rs.getInt("id");
                 String numberAccount = rs.getString("number_account");
                 Date openingDate = rs.getDate("opening_date");
-                Double remainder = rs.getDouble("remainder");
+                BigDecimal remainder = rs.getBigDecimal("remainder");
                 User user = userDAO.findEntityById(rs.getInt("id_user"));
                 TypeCurrency currency = typeCurrencyDAO.findEntityById(rs.getInt("id_currency"));
                 account = new Account(id, numberAccount, openingDate, remainder, user, bank, currency);
@@ -221,7 +222,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ACCOUNT)) {
             preparedStatement.setString(1, account.getNumberAccount());
             preparedStatement.setTimestamp(2, new Timestamp(account.getOpeningDate().getTime()));
-            preparedStatement.setDouble(3, account.getRemainder());
+            preparedStatement.setBigDecimal(3, account.getRemainder());
             preparedStatement.setInt(4, account.getUser().getId());
             preparedStatement.setInt(5, account.getBank().getId());
             preparedStatement.setInt(6, account.getCurrency().getId());
@@ -237,7 +238,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
     public boolean update(Account account) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_ACCOUNT)) {
             preparedStatement.setTimestamp(1, new Timestamp(account.getOpeningDate().getTime()));
-            preparedStatement.setDouble(2, account.getRemainder());
+            preparedStatement.setBigDecimal(2, account.getRemainder());
             preparedStatement.setInt(3, account.getUser().getId());
             preparedStatement.setInt(4, account.getBank().getId());
             preparedStatement.setInt(5, account.getCurrency().getId());
@@ -252,7 +253,7 @@ public class AccountDAO extends AbstractDAO<Integer, Account> {
 
     public boolean updateRemainder(Account account) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_ACCOUNT_REMAINDER)) {
-            preparedStatement.setDouble(1, account.getRemainder());
+            preparedStatement.setBigDecimal(1, account.getRemainder());
             preparedStatement.setString(2, account.getNumberAccount());
             preparedStatement.executeUpdate();
             return true;

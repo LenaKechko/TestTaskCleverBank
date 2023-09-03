@@ -27,44 +27,37 @@ public class BankMenu extends AbstractMenu {
             transactionDB.initTransaction(bankDAO);
 
             switch (sc.nextInt()) {
-                case 1:
-
-                    CallTransaction.doSelect(() -> {
-                        List<Bank> banks = bankDAO.findAll();
-                        for (Bank bank : banks) {
-                            System.out.println(bank.toString());
-                        }
-                    }, transactionDB);
-                    break;
-                case 2:
-                    CallTransaction.doTransaction(() -> bankDAO.create(BankMenuAction.create()),
-                            transactionDB);
-                case 3:
-                    CallTransaction.doTransaction(() -> {
-                        int id = bankDAO.findEntityByName(BankMenuAction.enterName());
-                        if (id != 0) {
-                            bankDAO.delete(id);
-                            System.out.println("Удаление произведено успешно");
-                        } else {
-                            System.out.println("Нет такого банка!");
-                        }
-                    }, transactionDB);
-                    break;
-                case 4:
-                    CallTransaction.doTransaction(() -> {
-                        int id = bankDAO.findEntityByName(BankMenuAction.enterName());
-                        if (id != 0) {
-                            Bank bankUpdate = bankDAO.findEntityById(id);
-                            bankUpdate = BankMenuAction.update(bankUpdate);
-                            bankDAO.update(bankUpdate);
-                            System.out.println("Данные успешно изменены");
-                        } else {
-                            System.out.println("Банк для изменений не найден!");
-                        }
-                    }, transactionDB);
-                    break;
-                case 5:
+                case 1 -> CallTransaction.doSelect(() -> {
+                    List<Bank> banks = bankDAO.findAll();
+                    for (Bank bank : banks) {
+                        System.out.println(bank.toString());
+                    }
+                }, transactionDB);
+                case 2 -> CallTransaction.doTransaction(() -> bankDAO.create(BankMenuAction.create()),
+                        transactionDB);
+                case 3 -> CallTransaction.doTransaction(() -> {
+                    int id = bankDAO.findEntityByName(BankMenuAction.enterName());
+                    if (id != 0) {
+                        bankDAO.delete(id);
+                        System.out.println("Удаление произведено успешно");
+                    } else {
+                        System.out.println("Нет такого банка!");
+                    }
+                }, transactionDB);
+                case 4 -> CallTransaction.doTransaction(() -> {
+                    int id = bankDAO.findEntityByName(BankMenuAction.enterName());
+                    if (id != 0) {
+                        Bank bankUpdate = bankDAO.findEntityById(id);
+                        bankUpdate = BankMenuAction.update(bankUpdate);
+                        bankDAO.update(bankUpdate);
+                        System.out.println("Данные успешно изменены");
+                    } else {
+                        System.out.println("Банк для изменений не найден!");
+                    }
+                }, transactionDB);
+                case 5 -> {
                     return;
+                }
             }
         }
     }

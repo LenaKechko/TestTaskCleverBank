@@ -40,7 +40,7 @@ public class AccountMenu extends AbstractMenu {
                         System.out.println("Такого пользователя не существует!");
                     } else {
                         CallTransaction.doTransaction(() ->
-                                accountDAO.delete(account), transactionDB);
+                                accountDAO.delete(account.getUser()), transactionDB);
                         System.out.println("Удаление произведено успешно");
                     }
                 }

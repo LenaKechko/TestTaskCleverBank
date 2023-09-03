@@ -7,7 +7,7 @@ public class Writer {
         this.writer = writer;
     }
 
-    public void runWriter(String text, String fileName) {
+    public void runWriter(StringBuilder text, String fileName) {
         writer.createFile(text, fileName);
     }
 }

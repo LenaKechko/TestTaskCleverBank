@@ -8,14 +8,15 @@ import org.cleverbank.writer.IWriter;
 import org.cleverbank.writer.Writer;
 import org.cleverbank.writer.WriterTXT;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 
 public interface IOperationWithAccount {
-    TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, double money);
+    TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, BigDecimal money);
 
-    default BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, double money, TypeTransaction type) {
+    default BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, BigDecimal money, TypeTransaction type) {
         BankTransaction check = new BankTransaction();
         check.setTransactionDate(Date.from(Instant.now()));
         check.setMoney(money);
@@ -25,22 +26,22 @@ public interface IOperationWithAccount {
         return check;
     }
 
-    static String generateCheckHeader(BankTransaction bankTransaction) {
-        String bill = "-------------------------------------------\n";
-        bill += "|            Банковский чек               |\n";
-        bill += String.format("| Чек: %34d |\n", bankTransaction.getNumberCheck());
+    static StringBuilder generateCheckHeader(BankTransaction bankTransaction) {
+        StringBuilder bill = new StringBuilder("-------------------------------------------\n");
+        bill.append("|            Банковский чек               |\n");
+        bill.append(String.format("| Чек: %34d |\n", bankTransaction.getNumberCheck()));
         SimpleDateFormat formatterForDate = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat formatterForTime = new SimpleDateFormat("HH:mm:ss");
-        bill += String.format("| %10s                     %8s |\n",
+        bill.append(String.format("| %10s                     %8s |\n",
                 formatterForDate.format(bankTransaction.getTransactionDate()),
-                formatterForTime.format(bankTransaction.getTransactionDate()));
-        bill += String.format("| Тип транзакции: %23s |\n", bankTransaction.getType().getName());
+                formatterForTime.format(bankTransaction.getTransactionDate())));
+        bill.append(String.format("| Тип транзакции: %23s |\n", bankTransaction.getType().getName().getType()));
         return bill;
     }
 
-    String generateCheck(BankTransaction bankTransaction);
+    StringBuilder generateCheck(BankTransaction bankTransaction);
 
-    default void printCheck(String bill, String fileName) {
+    default void printCheck(StringBuilder bill, String fileName) {
         IWriter writerTXT = new WriterTXT();
         Writer writer = new Writer(writerTXT);
         writer.runWriter(bill, "check\\" + fileName);

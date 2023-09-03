@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class BankMenuAction {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private final static Scanner scanner = new Scanner(System.in);
 
     public static Bank create() {
         Bank bank = new Bank();

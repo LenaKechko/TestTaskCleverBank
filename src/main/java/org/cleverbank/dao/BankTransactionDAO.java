@@ -3,6 +3,7 @@ package org.cleverbank.dao;
 import org.cleverbank.connection.TransactionDB;
 import org.cleverbank.entities.*;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction =
                         typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double money = rs.getDouble("money");
+                BigDecimal money = rs.getBigDecimal("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransactions.add(
@@ -82,7 +83,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction =
                         typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double money = rs.getDouble("money");
+                BigDecimal money = rs.getBigDecimal("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransaction = new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver);
@@ -115,7 +116,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
                 int numberCheck = rs.getInt("number_check");
                 Date transactionDate = rs.getDate("transaction_date");
                 TypeTransaction typeTransaction = typeTransactionDAO.findEntityById(rs.getInt("id_type_of_transaction"));
-                Double money = rs.getDouble("money");
+                BigDecimal money = rs.getBigDecimal("money");
                 Account accountOfSender = accountDao.findEntityById(rs.getInt("id_sender"));
                 Account accountOfReceiver = accountDao.findEntityById(rs.getInt("id_receiver"));
                 bankTransactions.add(new BankTransaction(numberCheck, transactionDate, typeTransaction, money, accountOfSender, accountOfReceiver));
@@ -132,12 +133,12 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
     }
 
     public Integer findNumberCheckByBankTransaction(BankTransaction bankTransaction) {
-        Integer id = 0;
+        int id = 0;
         try (PreparedStatement statement =
                      connection.prepareStatement(SQL_SELECT_NUMBER_CHECK_BANK_TRANSACTIONS)) {
             statement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             statement.setInt(2, bankTransaction.getType().getId());
-            statement.setDouble(3, bankTransaction.getMoney());
+            statement.setBigDecimal(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 statement.setNull(4, Types.BIGINT);
             } else {
@@ -189,7 +190,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
             preparedStatement.setTimestamp(1,
                     new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
-            preparedStatement.setDouble(3, bankTransaction.getMoney());
+            preparedStatement.setBigDecimal(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 preparedStatement.setNull(4, Types.BIGINT);
             } else {
@@ -213,7 +214,7 @@ public class BankTransactionDAO extends AbstractDAO<Integer, BankTransaction> {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BANK_TRANSACTION)) {
             preparedStatement.setTimestamp(1, new Timestamp(bankTransaction.getTransactionDate().getTime()));
             preparedStatement.setInt(2, bankTransaction.getType().getId());
-            preparedStatement.setDouble(3, bankTransaction.getMoney());
+            preparedStatement.setBigDecimal(3, bankTransaction.getMoney());
             if (bankTransaction.getAccountOfSender() == null) {
                 preparedStatement.setNull(4, Types.BIGINT);
             } else {

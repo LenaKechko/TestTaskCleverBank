@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class UserMenuAction {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private final static Scanner scanner = new Scanner(System.in);
     public static User create() {
         User user = new User();
         System.out.println("Введите фамилию:");

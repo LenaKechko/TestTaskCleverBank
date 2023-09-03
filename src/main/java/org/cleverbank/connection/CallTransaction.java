@@ -22,8 +22,8 @@ public class CallTransaction {
             e.printStackTrace();
         } finally {
             transactionDB.endTransaction();
-            return null;
         }
+        return null;
     }
 
     public static void doTransaction(Runnable runnable, TransactionDB transactionDB) {
@@ -48,8 +48,7 @@ public class CallTransaction {
             e.printStackTrace();
         } finally {
             transactionDB.endTransaction();
-            return null;
         }
-
+        return null;
     }
 }

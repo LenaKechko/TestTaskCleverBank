@@ -6,11 +6,15 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Bank {
     private int id;
     private String name;
     private String address;
 
-
+    @Override
+    public String toString() {
+        return "Наименование банка: " + name +
+                "\nАдрес банка: " + address +
+                "\n--------------------------------";
+    }
 }

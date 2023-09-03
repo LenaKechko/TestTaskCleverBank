@@ -38,7 +38,6 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 String name = rs.getString(2);
-
                 typeTransaction = new TypeTransaction(id, TypeTransactionEnum.findByType(name));
             }
         } catch (SQLException e) {

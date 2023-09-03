@@ -19,7 +19,7 @@ public class WriterMenu extends AbstractMenu {
     private static final String STATEMENTS_STATEMENT = "statements\\statement";
 
     public static void start(Account account, LocalDate dateStartPeriod, LocalDate dateEndPeriod) {
-        String accountStatement = WriterMenuAction.getStatement(account, dateStartPeriod, dateEndPeriod);
+        StringBuilder accountStatement = WriterMenuAction.getStatement(account, dateStartPeriod, dateEndPeriod);
         Writer writer;
         while (true) {
             printMenu(WRITER_MENU);

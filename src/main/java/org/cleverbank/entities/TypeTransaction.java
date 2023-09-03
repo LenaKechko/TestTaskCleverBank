@@ -4,10 +4,14 @@ import lombok.*;
 
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class TypeTransaction {
     private int id;
     private TypeTransactionEnum name;
+
+    @Override
+    public String toString() {
+        return "Тип транзакции: " + name.getType();
+    }
 }

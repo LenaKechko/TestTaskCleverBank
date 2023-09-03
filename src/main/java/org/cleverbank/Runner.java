@@ -13,16 +13,16 @@ public class Runner {
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в Clever-Bank.\nВыберите операцию:");
-        try {
-            InputStream inputStream = new FileInputStream("config.yml");
-            Yaml yaml = new Yaml();
-            Map<String, Object> data = yaml.load(inputStream);
-            Timer timer = new Timer();
-            timer.schedule(new TimerCashBack((Double) data.get("percent")),
-                    100, (Integer) data.get("period"));
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            InputStream inputStream = new FileInputStream("config.yml");
+//            Yaml yaml = new Yaml();
+//            Map<String, Object> data = yaml.load(inputStream);
+//            Timer timer = new Timer();
+//            timer.schedule(new TimerCashBack((Double) data.get("percent")),
+//                    100, (Integer) data.get("period"));
+//        } catch (FileNotFoundException e) {
+//            System.out.println(e.getMessage());
+//        }
 
         MainMenu.start();
     }
