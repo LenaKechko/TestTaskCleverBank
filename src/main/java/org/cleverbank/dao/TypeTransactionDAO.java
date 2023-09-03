@@ -15,7 +15,7 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
 
     @Override
     public List<TypeTransaction> findAll() {
-        ArrayList<TypeTransaction> typeTransactions = new ArrayList<>();
+        List<TypeTransaction> typeTransactions = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_TYPE_TRANSACTION);
             while (rs.next()) {

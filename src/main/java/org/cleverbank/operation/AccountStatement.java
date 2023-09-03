@@ -39,8 +39,8 @@ public class AccountStatement {
         for (BankTransaction bankTransaction : bankTransactions) {
             String description = "";
             Double money = 0.0;
-            switch (bankTransaction.getType().getName().toLowerCase()) {
-                case "перевод":
+            switch (bankTransaction.getType().getName()) {
+                case TRANSFER -> {
                     description = "Пополнение";
                     money = bankTransaction.getMoney();
                     if (bankTransaction.getAccountOfSender().getId() == account.getId()) {
@@ -50,15 +50,15 @@ public class AccountStatement {
                     } else {
                         description += " от " + bankTransaction.getAccountOfSender().getUser().getLastName();
                     }
-                    break;
-                case "снятие средств":
+                }
+                case WITHDRAWAL -> {
                     description = "Снятие средств";
                     money = -bankTransaction.getMoney();
-                    break;
-                case "пополнение счета":
+                }
+                case REPLENISHMENT -> {
                     description = "Пополнение";
                     money = bankTransaction.getMoney();
-                    break;
+                }
             }
             bill += String.format("%s | %-40s| %.2f %s\n",
                     formatDate.format(bankTransaction.getTransactionDate()), description, money,

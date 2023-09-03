@@ -12,7 +12,7 @@ public class TypeCurrencyDAO extends AbstractDAO<Integer, TypeCurrency> {
     public static final String SQL_SELECT_CURRENCY_ID = "SELECT * FROM type_currency WHERE id = ?";
     @Override
     public List<TypeCurrency> findAll() {
-        ArrayList<TypeCurrency> typeCurrencies = new ArrayList<>();
+        List<TypeCurrency> typeCurrencies = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SQL_SELECT_ALL_CURRENCY);
             while (rs.next()) {

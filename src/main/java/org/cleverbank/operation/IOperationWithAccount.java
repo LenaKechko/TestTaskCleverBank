@@ -24,7 +24,7 @@ public interface IOperationWithAccount {
         check.setAccountOfReceiver(receiverAccount);
         return check;
     }
-    String generateCheck(BankTransaction bankTransaction);
+
     static String generateCheckHeader(BankTransaction bankTransaction) {
         String bill = "-------------------------------------------\n";
         bill += "|            Банковский чек               |\n";
@@ -37,6 +37,8 @@ public interface IOperationWithAccount {
         bill += String.format("| Тип транзакции: %23s |\n", bankTransaction.getType().getName());
         return bill;
     }
+
+    String generateCheck(BankTransaction bankTransaction);
 
     default void printCheck(String bill, String fileName) {
         IWriter writerTXT = new WriterTXT();

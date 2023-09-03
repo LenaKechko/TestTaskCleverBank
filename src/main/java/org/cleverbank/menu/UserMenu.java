@@ -20,7 +20,6 @@ public class UserMenu extends AbstractMenu {
                     4. Изменить данные клиента (по фио)
                     5. Вернуться в главное меню""";
 
-
     public static void start() {
         while (true) {
             printMenu(USER_MENU);
@@ -29,45 +28,37 @@ public class UserMenu extends AbstractMenu {
             TransactionDB transactionDB = new TransactionDB();
             transactionDB.initTransaction(userDAO);
             switch (sc.nextInt()) {
-                case 1:
-                     CallTransaction.doTransaction(() ->{
-                        List<User> users = userDAO.findAll();
-                        for (User user : users) {
-                            System.out.println(user.toString());
-                        }
-                    }, transactionDB);
-                    break;
-                case 2:
-                    CallTransaction.doTransaction(() -> userDAO.create(UserMenuAction.create()),
-                            transactionDB);
-                    break;
-                case 3:
-                    CallTransaction.doTransaction(() -> {
-                                int id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
-                                if (id != 0) {
-                                    userDAO.delete(id);
-                                    System.out.println("Удаление произведено успешно");
-                                } else {
-                                    System.out.println("Нет такого пользователя!");
-                                }
-                            }, transactionDB
-                    );
-                    break;
-                case 4:
-                    CallTransaction.doTransaction(() -> {
-                        int id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
-                        if (id != 0) {
-                            User userUpdate = userDAO.findEntityById(id);
-                            userUpdate = UserMenuAction.update(userUpdate);
-                            userDAO.update(userUpdate);
-                            System.out.println("Данные успешно изменены");
-                        } else {
-                            System.out.println("Нет такого пользователя для изменения!");
-                        }
-                    }, transactionDB);
-                    break;
-                case 5:
+                case 1 -> CallTransaction.doSelect(() -> {
+                    List<User> users = userDAO.findAll();
+                    for (User user : users) {
+                        System.out.println(user.toString());
+                    }
+                }, transactionDB);
+                case 2 -> CallTransaction.doTransaction(() ->
+                        userDAO.create(UserMenuAction.create()), transactionDB);
+                case 3 -> CallTransaction.doTransaction(() -> {
+                    int id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
+                    if (id != 0) {
+                        userDAO.delete(id);
+                        System.out.println("Удаление произведено успешно");
+                    } else {
+                        System.out.println("Нет такого пользователя!");
+                    }
+                }, transactionDB);
+                case 4 -> CallTransaction.doTransaction(() -> {
+                    int id = userDAO.findEntityByFullName(UserMenuAction.enterFullName());
+                    if (id != 0) {
+                        User userUpdate = userDAO.findEntityById(id);
+                        userUpdate = UserMenuAction.update(userUpdate);
+                        userDAO.update(userUpdate);
+                        System.out.println("Данные успешно изменены");
+                    } else {
+                        System.out.println("Нет такого пользователя для изменения!");
+                    }
+                }, transactionDB);
+                case 5 -> {
                     return;
+                }
             }
         }
     }

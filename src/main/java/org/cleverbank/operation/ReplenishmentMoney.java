@@ -13,14 +13,9 @@ public class ReplenishmentMoney implements IOperationWithAccount {
     public TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, double money) {
         Account account = (senderAccount != null) ? senderAccount : receiverAccount;
         account.setRemainder(account.getRemainder() + money);
-        try {
-            AccountDAO accountDAO = new AccountDAO();
-            transactionDB.initTransaction(accountDAO);
-            accountDAO.update(account);
-        } catch (Exception e) {
-            transactionDB.rollback();
-            e.printStackTrace();
-        }
+        AccountDAO accountDAO = new AccountDAO();
+        transactionDB.initTransaction(accountDAO);
+        accountDAO.update(account);
         return transactionDB;
     }
 
