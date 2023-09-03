@@ -21,7 +21,9 @@ public class MainMenu extends AbstractMenu {
                 case 2 -> UserMenu.start();
                 case 3 -> AccountMenu.start();
                 case 4 -> BankMenu.start();
-                case 5 -> System.exit(0);
+                case 5 -> {
+                    return;
+                }
             }
         }
     }
