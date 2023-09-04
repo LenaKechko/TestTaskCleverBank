@@ -8,8 +8,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Класс, отвещающий за запись информации в PDF файл
+ *
+ * @author Кечко Елена
+ */
+
 public class WriterPDF implements IWriter {
 
+    /**
+     * Метод создающий файл с указанным именем
+     * по определенному пути
+     *
+     * @param text     текст для записи
+     * @param fileName имя или путь для записи файла
+     * @throws RuntimeException в случае не верного пути
+     * или не возможности записать файл
+     */
     @Override
     public void createFile(StringBuilder text, String fileName) {
 

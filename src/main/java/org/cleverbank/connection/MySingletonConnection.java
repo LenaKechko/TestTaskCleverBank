@@ -6,12 +6,25 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * Реализация шаблона Singleton для выдачи connection с помощью перечисления
+ *
+ * @author Кечко Елена
+ */
+
 public enum MySingletonConnection {
     INSTANCE;
 
+    /**
+     * Поле для пула соединений
+     */
     private final PGPoolingDataSource dataSource;
 
-    private MySingletonConnection() {
+    /**
+     * Конструктор. Содержит подключение к базе данных.
+     * Данные для подключения берутся из properties-файла
+     */
+    MySingletonConnection() {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("database");
         String serverName = resourceBundle.getString("db.serverName");
         String user = resourceBundle.getString("db.user");
@@ -27,6 +40,12 @@ public enum MySingletonConnection {
         dataSource.setMaxConnections(maxConnections);
     }
 
+    /**
+     * Метод выдающий connection к базе данных
+     *
+     * @return объект типа Connection
+     * @throws RuntimeException при невозможности соединиться с БД
+     */
     public Connection getConnectionDB() {
         try {
             return dataSource.getConnection();

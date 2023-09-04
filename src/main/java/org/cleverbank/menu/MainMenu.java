@@ -2,8 +2,15 @@ package org.cleverbank.menu;
 
 import java.util.Scanner;
 
+/**
+ * Класс отвечающий за основное меню с выбором начальных операций
+ *
+ * @author Кечко Елена
+ */
 public class MainMenu extends AbstractMenu {
-
+    /**
+     * Константа вида главного меню
+     */
     private final static String MAIN_MENU =
             """
                     1. Выполнение операций с аккаунтом
@@ -12,6 +19,9 @@ public class MainMenu extends AbstractMenu {
                     4. Операции с банками
                     5. Завершить работу приложения""";
 
+    /**
+     * Метод позволяющий выбрать раздел операций
+     */
     public static void start() {
         while (true) {
             printMenu(MAIN_MENU);

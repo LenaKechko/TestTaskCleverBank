@@ -13,9 +13,34 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 
+/**
+ * Интерфейс для операций над счетом таких, как
+ * пополнение, снятие и перевод денежных средств,
+ * а также генерация чека о транзакции и
+ * запись изменений в таблицы БД
+ *
+ * @author Кечко Елена
+ */
 public interface IOperationWithAccount {
+
+    /**
+     * Метод выполняющие операции с денежными средствами
+     *
+     * @param transactionDB   соединение для проведение транзакции
+     * @param senderAccount   счет отправителя среств (если есть или null)
+     * @param receiverAccount счет получателя среств (если есть или null)
+     * @param money           сумма транзакции
+     */
     TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount, Account receiverAccount, BigDecimal money);
 
+    /**
+     * Метод для создания транзакции для дальнейшей ее записи в таблицу transactions БД
+     *
+     * @param senderAccount   счет отправителя среств (если есть или null)
+     * @param receiverAccount счет получателя среств (если есть или null)
+     * @param money           сумма транзакции
+     * @param type            тип транзакции
+     */
     default BankTransaction generateBankTransaction(Account senderAccount, Account receiverAccount, BigDecimal money, TypeTransaction type) {
         BankTransaction check = new BankTransaction();
         check.setTransactionDate(Date.from(Instant.now()));
@@ -26,6 +51,11 @@ public interface IOperationWithAccount {
         return check;
     }
 
+    /**
+     * Метод для формирования шапки чека (для всех операций единый)
+     *
+     * @param bankTransaction данные о транзакции
+     */
     static StringBuilder generateCheckHeader(BankTransaction bankTransaction) {
         StringBuilder bill = new StringBuilder("-------------------------------------------\n");
         bill.append("|            Банковский чек               |\n");
@@ -39,8 +69,19 @@ public interface IOperationWithAccount {
         return bill;
     }
 
+    /**
+     * Метод для формаирования чека индивидуально под операцию
+     *
+     * @param bankTransaction данные о транзакции
+     */
     StringBuilder generateCheck(BankTransaction bankTransaction);
 
+    /**
+     * Метод для формаирования чека в формате TXT
+     *
+     * @param fileName имя файла
+     * @param bill     текст чека
+     */
     default void printCheck(StringBuilder bill, String fileName) {
         IWriter writerTXT = new WriterTXT();
         Writer writer = new Writer(writerTXT);

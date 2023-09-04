@@ -6,7 +6,24 @@ import org.cleverbank.entities.BankTransaction;
 
 import java.math.BigDecimal;
 
+/**
+ * Класс для перевода денежных средств с одного счета на другой
+ *
+ * @author Кечко Елена
+ */
 public class TransferMoney implements IOperationWithAccount {
+
+    /**
+     * Метод для выполнения операции.
+     * Происходит изменение остатка на счетах получателя
+     * и отправителя на определенную сумму
+     *
+     * @param transactionDB   соединение с БД
+     * @param senderAccount   счет отправителя среств (если есть или null)
+     * @param receiverAccount счет получателя среств (если есть или null)
+     * @param money           сумма транзакции
+     * @return соединение с БД для общего закрытия транзакции
+     */
     public TransactionDB startOperation(TransactionDB transactionDB, Account senderAccount,
                                         Account receiverAccount, BigDecimal money) {
         ReplenishmentMoney operationSender = new ReplenishmentMoney();
@@ -16,6 +33,12 @@ public class TransferMoney implements IOperationWithAccount {
         return transactionDB;
     }
 
+    /**
+     * Метод для формирования чека проведенной транзакции
+     *
+     * @param bankTransaction объект транзакции
+     * @return текст для чека
+     */
     @Override
     public StringBuilder generateCheck(BankTransaction bankTransaction) {
         StringBuilder bill = IOperationWithAccount.generateCheckHeader(bankTransaction);

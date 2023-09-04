@@ -12,8 +12,18 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Класс, отвечающий за меню работы с операциями,
+ * поступными пользователю в банке (перевод,
+ * снятие и пополнение средств, запрос выписок)
+ *
+ * @author Кечко Елена
+ */
 public class OperationMenu extends AbstractMenu {
 
+    /**
+     * Константа вида меню операций в банке
+     */
     private final static String OPERATION_MENU =
             """
                     1. Перевод денежных средств на другой аккаунт
@@ -22,6 +32,11 @@ public class OperationMenu extends AbstractMenu {
                     4. Запросить выписку за период
                     5. Вернуться в основное меню""";
 
+    /**
+     * Метод позволяющий выбрать раздел операций в банке:
+     * перевод, снятие и пополнение денежных среств,
+     * запросить выписки со счета
+     */
     public static void start() {
         UserOperationWithAccount userAction = new UserOperationWithAccount();
         TypeTransactionDAO typeTransactionDAO = new TypeTransactionDAO();
@@ -51,7 +66,7 @@ public class OperationMenu extends AbstractMenu {
                     System.out.println("Введите номер счета, с которого снимаются средства:");
                     final String numberAccountReceiver = scanner.nextLine();
                     System.out.println("Введите сумму (формат XX,XX):");
-                    final BigDecimal money = scanner.useLocale(Locale.ENGLISH).nextBigDecimal();
+                    final BigDecimal money = scanner.nextBigDecimal();
                     CallTransaction.doTransaction(() ->
                             userAction.runOperation(
                                     typeTransactionDAO.findEntityByType(TypeTransactionEnum.WITHDRAWAL),
@@ -63,7 +78,7 @@ public class OperationMenu extends AbstractMenu {
                     System.out.println("Введите номер, пополняемого счета:");
                     final String numberAccountSender = scanner.nextLine();
                     System.out.println("Введите сумму (формат XX,XX):");
-                    final BigDecimal money = scanner.useLocale(Locale.ENGLISH).nextBigDecimal();
+                    final BigDecimal money = scanner.nextBigDecimal();
                     CallTransaction.doTransaction(() ->
                             userAction.runOperation(
                                     typeTransactionDAO.findEntityByType(TypeTransactionEnum.REPLENISHMENT),
@@ -74,13 +89,14 @@ public class OperationMenu extends AbstractMenu {
                     while (true) {
                         System.out.println("Введите номер счета:");
                         String numberAccount = scanner.nextLine();
+                        transactionDB.initTransaction(accountDAO);
                         Account account = CallTransaction.<Account>doSelect(() ->
                                 accountDAO.findEntityByNumberAccount(numberAccount), transactionDB);
                         if (account == null) {
                             System.out.println("Не верно введен счет!");
                             continue;
                         }
-                        AccountStatementMenu.start(account);
+                        StatementMenu.start(account);
                         break;
                     }
 

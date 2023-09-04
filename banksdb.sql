@@ -7,10 +7,10 @@
  DROP TABLE IF EXISTS type_currency;
  DROP TABLE IF EXISTS type_transaction;
 
--- DROP DATABASE IF EXISTS banksdb;
+DROP DATABASE IF EXISTS banksdb;
 
 
---CREATE DATABASE banksdb;
+CREATE DATABASE banksdb;
 
 CREATE TABLE IF NOT EXISTS banks
 (
@@ -328,7 +328,14 @@ CREATE TABLE IF NOT EXISTS transactions
     FOREIGN KEY (id_sender) REFERENCES accounts (id)
 );
 
---INSERT INTO transactions(transaction_date, id_type_of_transaction, money, id_sender, id_receiver)
---	VALUES (?, ?, ?, ?, ?);
-
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (1, '2023-09-01 11:08:53.418000', 3, 100, 16, null);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (2, '2023-09-01 11:09:13.957000', 1, 250, 17, 16);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (3, '2023-09-01 11:09:25.763000', 2, 10, null, 16);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (4, '2023-09-02 16:50:01.815000', 3, 10, 16, null);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (5, '2023-09-02 18:40:30.703000', 2, 133, null, 16);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (6, '2023-09-02 18:43:39.977000', 2, 0.5, null, 16);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (7, '2023-09-02 18:44:08.153000', 2, 0.6, null, 16);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (8, '2023-09-02 18:45:28.031000', 3, 0.6, 16, null);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (9, '2023-09-02 18:46:22.380000', 1, 100, 16, 17);
+INSERT INTO transactions (number_check, transaction_date, id_type_of_transaction, money, id_sender, id_receiver) VALUES (10, '2023-09-02 19:41:00.884000', 2, 10, null, 16);
 

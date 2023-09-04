@@ -9,9 +9,17 @@ import org.cleverbank.menu.action.UserMenuAction;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Класс отвечающий за меню работы с операциями над пользователем
+ *
+ * @author Кечко Елена
+ */
 
 public class UserMenu extends AbstractMenu {
 
+    /**
+     * Константа вида меню операций над пользователем
+     */
     private final static String USER_MENU =
             """
                     1. Вывести информацию о клиентах
@@ -20,6 +28,11 @@ public class UserMenu extends AbstractMenu {
                     4. Изменить данные клиента (по фио)
                     5. Вернуться в главное меню""";
 
+    /**
+     * Метод позволяющий выбрать раздел операций над пользователем
+     * Здесь представлены основные crud-операции: создание, удаление,
+     * изменение и вывод на экран существующих пользователей
+     */
     public static void start() {
         while (true) {
             printMenu(USER_MENU);

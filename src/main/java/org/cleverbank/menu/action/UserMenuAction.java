@@ -4,9 +4,22 @@ import org.cleverbank.entities.User;
 
 import java.util.Scanner;
 
+/**
+ * Класс с операциями необходимыми в меню операций над пользователем
+ *
+ * @author Кечко Елена
+ */
 public class UserMenuAction {
-
+    /**
+     * Поле, ппредоставляющее возможность считывать данные с консоли
+     */
     private final static Scanner scanner = new Scanner(System.in);
+
+    /**
+     * Метод для ввода данных необходимых для создания пользователя
+     *
+     * @return объект пользователь User
+     */
     public static User create() {
         User user = new User();
         System.out.println("Введите фамилию:");
@@ -23,6 +36,11 @@ public class UserMenuAction {
         return user;
     }
 
+    /**
+     * Метод для ввода фио пользователя
+     *
+     * @return объект пользователя User
+     */
     public static User enterFullName() {
         System.out.println("Введите фамилию:");
         String lastName = scanner.next();
@@ -34,6 +52,12 @@ public class UserMenuAction {
         return user;
     }
 
+    /**
+     * Метод для ввода данных на изменение объекта User
+     *
+     * @param user объект для изменения
+     * @return объект пользователя User
+     */
     public static User update(User user) {
         System.out.println("Изменить фамилию (ввести новую/N):");
         String lastName = scanner.next();

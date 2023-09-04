@@ -10,11 +10,26 @@ import org.cleverbank.entities.TypeTransaction;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Класс для выполнения операций со счетом пользователей
+ *
+ * @author Кечко Елена
+ */
 public class UserOperationWithAccount {
 
-
+    /**
+     * Поле операции
+     */
     private IOperationWithAccount operation;
 
+    /**
+     * Метод для запуска операции по его типу.
+     *
+     * @param typeTransaction тип транзакции
+     * @param senderAccount   счет отправителя среств (если есть или null)
+     * @param receiverAccount счет получателя среств (если есть или null)
+     * @param money           сумма транзакции
+     */
     public void runOperation(TypeTransaction typeTransaction, Account senderAccount,
                              Account receiverAccount, BigDecimal money) {
         BankTransactionDAO bankTransactionDAO = new BankTransactionDAO();
@@ -28,7 +43,7 @@ public class UserOperationWithAccount {
         transactionDB.get().initTransaction(bankTransactionDAO);
         CallTransaction.doTransaction(() -> {
             transactionDB.set(operation.startOperation(transactionDB.get(), senderAccount, receiverAccount, money));
-            BankTransaction  operationCheck = operation.generateBankTransaction(
+            BankTransaction operationCheck = operation.generateBankTransaction(
                     senderAccount, receiverAccount, money, typeTransaction);
             bankTransactionDAO.create(operationCheck);
             int numberCheck = bankTransactionDAO.findNumberCheckByBankTransaction(operationCheck);

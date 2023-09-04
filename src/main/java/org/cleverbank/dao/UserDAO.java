@@ -6,21 +6,54 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для работы с сущностью User и таблицей БД users
+ *
+ * @author Кечко Елена
+ */
 public class UserDAO extends AbstractDAO<Integer, User> {
 
+    /**
+     * Запрос на вывод всех данных из таблицы
+     */
     public static final String SQL_SELECT_ALL_USERS = "SELECT * FROM users";
+
+    /**
+     * Запрос на вывод всех данных по известному id
+     */
     public static final String SQL_SELECT_USER_ID = "SELECT * FROM users WHERE id = ?";
 
-    public static final String SQL_SELECT_USER_FULL_NAME = "SELECT id FROM users WHERE lastname = ? and name = ? and middlename = ?";
+    /**
+     * Запрос на вывод всех данных по фио
+     */
+    public static final String SQL_SELECT_USER_FULL_NAME =
+            "SELECT id FROM users WHERE lastname = ? and name = ? and middlename = ?";
+    /**
+     * Запрос на запись данных в таблицу БД
+     */
     public static final String SQL_INSERT_USER =
             "INSERT INTO users(lastname, name, middlename, address, phone_number) VALUES (?, ?, ?, ?, ?)";
-
+    /**
+     * Запрос на удаление данных из таблицы БД по известному id
+     */
     public static final String SQL_DELETE_USER_ID = "DELETE FROM users WHERE id = ?";
-    public static final String SQL_DELETE_USER_FULL_NAME = "DELETE FROM users WHERE lastname = ? and name = ? and middlename = ?";
-
+    /**
+     * Запрос на удаление данных из таблицы БД по фио
+     */
+    public static final String SQL_DELETE_USER_FULL_NAME =
+            "DELETE FROM users WHERE lastname = ? and name = ? and middlename = ?";
+    /**
+     * Запрос на изменение данных из таблицы БД по известному id
+     */
     public static final String SQL_UPDATE_USER =
             "UPDATE users SET lastname = ?, name = ?, middlename = ?, address = ?, phone_number = ? WHERE id = ?";
 
+    /**
+     * Метод для просмотра всех данных из таблицы users
+     *
+     * @return List объектов сущности
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
@@ -41,6 +74,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return users;
     }
 
+    /**
+     * Метод для нахождение сущности из БД по id
+     *
+     * @param id объекта
+     * @return объект User
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public User findEntityById(Integer id) {
         User user = null;
@@ -63,6 +103,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return user;
     }
 
+    /**
+     * Метод для нахождения id из БД по фио пользователя
+     *
+     * @param user объект пользователь
+     * @return id пользователя
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     public Integer findEntityByFullName(User user) {
         int id = 0;
         try (PreparedStatement statement =
@@ -80,6 +127,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return id;
     }
 
+    /**
+     * Метод для удаления сущности из БД по id
+     *
+     * @param id объекта
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean delete(Integer id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_ID)) {
@@ -92,6 +146,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return false;
     }
 
+    /**
+     * Метод для удаления сущности из БД по фио пользователя
+     *
+     * @param user объект пользователь
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean delete(User user) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_FULL_NAME)) {
@@ -106,6 +167,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return false;
     }
 
+    /**
+     * Метод для занесения сущности в БД
+     *
+     * @param user объект типа User
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean create(User user) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER)) {
@@ -122,6 +190,13 @@ public class UserDAO extends AbstractDAO<Integer, User> {
         return false;
     }
 
+    /**
+     * Метод для изменения сущности в БД
+     *
+     * @param user объект типа User
+     * @return true/false - успешное выполнение операции или нет
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public boolean update(User user) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER)) {

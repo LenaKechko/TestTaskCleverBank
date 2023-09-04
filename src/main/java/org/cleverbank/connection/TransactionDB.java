@@ -5,12 +5,29 @@ import org.cleverbank.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Класс для управления транзакциями
+ *
+ * @author Кечко Елена
+ */
+
 public class TransactionDB {
+    /**
+     * Поле для работы с подключением к БД
+     */
     private Connection connection;
+
+    /**
+     * Метод для инициализации транзакции и
+     * выдачи соединения конкретным объектам
+     *
+     * @param dao  объект для работы с таблицей БД
+     * @param daos объекты для работы с таблицей БД
+     */
 
     public void initTransaction(AbstractDAO dao, AbstractDAO... daos) {
         if (connection == null) {
-                connection = MySingletonConnection.INSTANCE.getConnectionDB();
+            connection = MySingletonConnection.INSTANCE.getConnectionDB();
         }
         try {
             connection.setAutoCommit(false);
@@ -23,13 +40,15 @@ public class TransactionDB {
         }
     }
 
+    /**
+     * Метод для завершения транзакции и закрытия соединения
+     */
     public void endTransaction() {
         try {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
@@ -41,6 +60,9 @@ public class TransactionDB {
 
     }
 
+    /**
+     * Метод для фиксирования всех действий с БД
+     */
     public void commit() {
         try {
             connection.commit();
@@ -49,6 +71,9 @@ public class TransactionDB {
         }
     }
 
+    /**
+     * Метод для отмены всех действий в транзакции в случае exception
+     */
     public void rollback() {
         try {
             connection.rollback();

@@ -13,7 +13,20 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Класс, являющийся входной точкой в проект.
+ *
+ * @author Кечко Елена
+ */
 public class Runner {
+
+    /**
+     * Метод запускающий проект.
+     * Запускает работу консольного приложения.
+     * Представляет работу с меню.
+     * Считывает конфигурационные данные по начислению
+     * процентов и запускает на фоне данный процесс.
+     */
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в Clever-Bank.\nВыберите операцию:");

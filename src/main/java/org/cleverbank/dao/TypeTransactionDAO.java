@@ -7,12 +7,31 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для работы с сущностью TypeTransaction и таблицей БД type_transaction
+ *
+ * @author Кечко Елена
+ */
 public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
-
+    /**
+     * Запрос на вывод всех данных из таблицы
+     */
     public static final String SQL_SELECT_ALL_TYPE_TRANSACTION = "SELECT * FROM type_transaction";
+    /**
+     * Запрос на вывод всех данных по известному id
+     */
     public static final String SQL_SELECT_TYPE_TRANSACTION_ID = "SELECT * FROM type_transaction WHERE id = ?";
+    /**
+     * Запрос на вывод всех данных по известному типу транзакции
+     */
     public static final String SQL_SELECT_TYPE_TRANSACTION_TYPE = "SELECT * FROM type_transaction WHERE type = ?";
 
+    /**
+     * Метод для просмотра всех данных из таблицы type_transaction
+     *
+     * @return List объектов сущности
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public List<TypeTransaction> findAll() {
         List<TypeTransaction> typeTransactions = new ArrayList<>();
@@ -29,6 +48,13 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
         return typeTransactions;
     }
 
+    /**
+     * Метод для нахождение сущности из БД по id
+     *
+     * @param id объекта
+     * @return объект TypeTransaction
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
     @Override
     public TypeTransaction findEntityById(Integer id) {
         TypeTransaction typeTransaction = null;
@@ -45,6 +71,14 @@ public class TypeTransactionDAO extends AbstractDAO<Integer, TypeTransaction> {
         }
         return typeTransaction;
     }
+
+    /**
+     * Метод для нахождение сущности из БД по наименованию типа транзакции
+     *
+     * @param type объект типа TypeTransactionEnum
+     * @return объект TypeTransaction
+     * @throws SQLException если при работе с БД произошла ошибка
+     */
 
     public TypeTransaction findEntityByType(TypeTransactionEnum type) {
         TypeTransaction typeTransaction = null;
